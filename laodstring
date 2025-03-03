@@ -2,6 +2,25 @@ local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 
+-- Function to set collision state
+local function setCollision(state)
+    if character then
+        for _, part in pairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = state
+            end
+        end
+    end
+end
+
+-- Enable noclip instantly
+setCollision(false)
+
+-- Ensure no collision while noclip is enabled
+game:GetService("RunService").Stepped:Connect(function()
+    setCollision(false)
+end)
+
 -- Target buildings list (case-sensitive)
 local buildingNames = {
     "Bank2",
@@ -72,20 +91,19 @@ local function flyToPosition(position)
     end
 end
 
--- Main loop to fly to all coins
+-- Main loop to fly to random coins continuously
 while true do
     local coins = findCoins()
     
     if #coins > 0 then
-        for _, coin in ipairs(coins) do
-            if coin:IsDescendantOf(workspace) then
-                flyToPosition(coin.Position)  -- Fly to the coin
-                task.wait(1)  -- Pause for 1 second before moving to the next coin
-            end
+        -- Randomly select a new coin each time
+        local randomCoin = coins[math.random(1, #coins)]
+        if randomCoin:IsDescendantOf(workspace) then
+            flyToPosition(randomCoin.Position)  -- Fly to the random coin
         end
     else
         warn("No coins found in any buildings!")
     end
 
-    task.wait(5)  -- Rescan for coins every 5 seconds
+    task.wait(1)  -- Wait 1 second before selecting a new random coin
 end
