@@ -2,62 +2,75 @@ local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Remove collisions
-for _, part in ipairs(character:GetDescendants()) do
-	if part:IsA("BasePart") then
-		part.CanCollide = false
-	end
-end
+-- Keep collisions disabled
+game:GetService("RunService").Stepped:Connect(function()
+    for _, part in ipairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+end)
 
-local FLY_SPEED = 26
-local ARRIVAL_THRESHOLD = 2
+local FLY_SPEED = 100
+local ARRIVAL_THRESHOLD = 5
 local visitedCoins = {}
 
 local function forceMoveTo(targetPos)
-	hrp.Velocity = Vector3.zero
-	local startTime = tick()
+    hrp.Velocity = Vector3.zero
+    local startTime = tick()
 
-	while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-		if tick() - startTime > 10 then
-			hrp.Velocity = Vector3.zero
-			return false
-		end
-		hrp.Velocity = (targetPos - hrp.Position).Unit * FLY_SPEED
-		task.wait()
-	end
+    while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+        if tick() - startTime > 10 then
+            hrp.Velocity = Vector3.zero
+            return false
+        end
+        hrp.Velocity = (targetPos - hrp.Position).Unit * FLY_SPEED
+        task.wait()
+    end
 
-	hrp.Velocity = Vector3.zero
-	return true
+    hrp.Velocity = Vector3.zero
+    return true
 end
 
 local function getCoins()
-	local coins = {}
-	for _, coin in ipairs(workspace:GetDescendants()) do
-		if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
-			table.insert(coins, coin)
-		end
-	end
-	return coins
+    local coins = {}
+    for _, coin in ipairs(workspace:GetDescendants()) do
+        if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+            table.insert(coins, coin)
+        end
+    end
+    return coins
+end
+
+local function getClosestCoin()
+    local coins = getCoins()
+    local closestCoin = nil
+    local shortestDistance = math.huge
+
+    for _, coin in ipairs(coins) do
+        local distance = (hrp.Position - coin.Position).Magnitude
+        if distance < shortestDistance then
+            shortestDistance = distance
+            closestCoin = coin
+        end
+    end
+
+    return closestCoin
 end
 
 while true do
-	local coins = getCoins()
+    local coin = getClosestCoin()
+    
+    if not coin then
+        task.wait(5)
+        continue
+    end
 
-	if #coins == 0 then
-		task.wait(5)
-		continue
-	end
+    local targetPos = coin.Position + Vector3.new(0, 5, 0)
+    if forceMoveTo(targetPos) then
+        visitedCoins[coin] = true
+        coin:Destroy()
+    end
 
-	-- Pick a random coin
-	local coin = coins[math.random(#coins)]
-
-	if coin and coin.Parent then
-		local targetPos = coin.Position + Vector3.new(0, 0, 0)
-		if forceMoveTo(targetPos) then
-			visitedCoins[coin] = true
-			coin:Destroy()
-		end
-	end
-
-	task.wait(0.1)
+    task.wait(1)
 end
