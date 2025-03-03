@@ -2,7 +2,7 @@ local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Keep collisions disabled
+-- Keep collisions disabled (fixes noclip issue)
 game:GetService("RunService").Stepped:Connect(function()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
@@ -12,7 +12,7 @@ game:GetService("RunService").Stepped:Connect(function()
 end)
 
 local FLY_SPEED = 100
-local ARRIVAL_THRESHOLD = 5
+local ARRIVAL_THRESHOLD = 1 -- Reduce so it stops exactly inside the coin
 local visitedCoins = {}
 
 local function forceMoveTo(targetPos)
@@ -20,7 +20,7 @@ local function forceMoveTo(targetPos)
     local startTime = tick()
 
     while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-        if tick() - startTime > 10 then
+        if tick() - startTime > 10 then -- Timeout failsafe
             hrp.Velocity = Vector3.zero
             return false
         end
@@ -66,7 +66,7 @@ while true do
         continue
     end
 
-    local targetPos = coin.Position + Vector3.new(0, 5, 0)
+    local targetPos = coin.Position -- Directly inside the coin
     if forceMoveTo(targetPos) then
         visitedCoins[coin] = true
         coin:Destroy()
