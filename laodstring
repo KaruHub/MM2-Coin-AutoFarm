@@ -18,7 +18,7 @@ game:GetService("RunService").Stepped:Connect(function()
     end
 end)
 
-local FLY_SPEED = 50
+local FLY_SPEED = 30
 local ARRIVAL_THRESHOLD = 1 -- Reduce so it stops exactly inside the coin
 local visitedCoins = {}
 
