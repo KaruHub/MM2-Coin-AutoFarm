@@ -72,5 +72,5 @@ while true do
         coin:Destroy()
     end
 
-    task.wait(1)
+    task.wait(0.1)
 end
