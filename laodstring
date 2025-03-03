@@ -1,0 +1,91 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+-- Target buildings list (case-sensitive)
+local buildingNames = {
+    "Bank2",
+    "BioLab",
+    "Factory",
+    "Hospital3",
+    "Hotel2",
+    "House2",
+    "Mansion2",
+    "MilBase",
+    "Office3",
+    "PoliceStation",
+    "ResearchFacility",
+    "Workplace"
+}
+
+-- Function to find all coins
+local function findCoins()
+    local coins = {}
+    
+    for _, buildingName in ipairs(buildingNames) do
+        local building = workspace:FindFirstChild(buildingName)
+        if not building then continue end
+        
+        -- Traverse hierarchy using nested FindFirstChild for safety
+        local coinContainer = building:FindFirstChild("CoinContainer")
+        if coinContainer then
+            local coinServer = coinContainer:FindFirstChild("Coin_Server")  -- Fixed: Coin_Server
+            if coinServer then
+                local coinVisual = coinServer:FindFirstChild("CoinVisual")
+                if coinVisual then
+                    local mainCoin = coinVisual:FindFirstChild("MainCoin")
+                    if mainCoin and mainCoin:IsA("MeshPart") then
+                        table.insert(coins, mainCoin)
+                    end
+                end
+            end
+        end
+    end
+    
+    return coins
+end
+
+-- Function to fly the player to a position
+local function flyToPosition(position)
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart or humanoid.Health <= 0 then return end
+
+    local flySpeed = 25  -- Speed of flying (studs per second)
+    local flyHeight = 5  -- Height above the target position
+
+    -- Calculate target position with offset
+    local targetPosition = position + Vector3.new(0, flyHeight, 0)
+
+    -- Fly towards the target position
+    while (humanoidRootPart.Position - targetPosition).Magnitude > 1 do
+        if not humanoidRootPart or humanoid.Health <= 0 then break end  -- Stop if player dies
+
+        -- Calculate direction and move
+        local direction = (targetPosition - humanoidRootPart.Position).Unit
+        humanoidRootPart.Velocity = direction * flySpeed
+        task.wait()
+    end
+
+    -- Stop movement when close enough
+    if humanoidRootPart then
+        humanoidRootPart.Velocity = Vector3.zero
+    end
+end
+
+-- Main loop to fly to all coins
+while true do
+    local coins = findCoins()
+    
+    if #coins > 0 then
+        for _, coin in ipairs(coins) do
+            if coin:IsDescendantOf(workspace) then
+                flyToPosition(coin.Position)  -- Fly to the coin
+                task.wait(1)  -- Pause for 1 second before moving to the next coin
+            end
+        end
+    else
+        warn("No coins found in any buildings!")
+    end
+
+    task.wait(5)  -- Rescan for coins every 5 seconds
+end
