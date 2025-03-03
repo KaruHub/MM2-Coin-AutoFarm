@@ -1,109 +1,63 @@
-local player = game.Players.LocalPlayer
+local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Function to set collision state
-local function setCollision(state)
-    if character then
-        for _, part in pairs(character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = state
-            end
-        end
-    end
+-- Remove collisions
+for _, part in ipairs(character:GetDescendants()) do
+	if part:IsA("BasePart") then
+		part.CanCollide = false
+	end
 end
 
--- Enable noclip instantly
-setCollision(false)
+local FLY_SPEED = 26
+local ARRIVAL_THRESHOLD = 2
+local visitedCoins = {}
 
--- Ensure no collision while noclip is enabled
-game:GetService("RunService").Stepped:Connect(function()
-    setCollision(false)
-end)
+local function forceMoveTo(targetPos)
+	hrp.Velocity = Vector3.zero
+	local startTime = tick()
 
--- Target buildings list (case-sensitive)
-local buildingNames = {
-    "Bank2",
-    "BioLab",
-    "Factory",
-    "Hospital3",
-    "Hotel2",
-    "House2",
-    "Mansion2",
-    "MilBase",
-    "Office3",
-    "PoliceStation",
-    "ResearchFacility",
-    "Workplace"
-}
+	while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+		if tick() - startTime > 10 then
+			hrp.Velocity = Vector3.zero
+			return false
+		end
+		hrp.Velocity = (targetPos - hrp.Position).Unit * FLY_SPEED
+		task.wait()
+	end
 
--- Function to find all coins
-local function findCoins()
-    local coins = {}
-    
-    for _, buildingName in ipairs(buildingNames) do
-        local building = workspace:FindFirstChild(buildingName)
-        if not building then continue end
-        
-        -- Traverse hierarchy using nested FindFirstChild for safety
-        local coinContainer = building:FindFirstChild("CoinContainer")
-        if coinContainer then
-            local coinServer = coinContainer:FindFirstChild("Coin_Server")  -- Fixed: Coin_Server
-            if coinServer then
-                local coinVisual = coinServer:FindFirstChild("CoinVisual")
-                if coinVisual then
-                    local mainCoin = coinVisual:FindFirstChild("MainCoin")
-                    if mainCoin and mainCoin:IsA("MeshPart") then
-                        table.insert(coins, mainCoin)
-                    end
-                end
-            end
-        end
-    end
-    
-    return coins
+	hrp.Velocity = Vector3.zero
+	return true
 end
 
--- Function to fly the player to a position
-local function flyToPosition(position)
-    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-    if not humanoidRootPart or humanoid.Health <= 0 then return end
-
-    local flySpeed = 25  -- Speed of flying (studs per second)
-    local flyHeight = 5  -- Height above the target position
-
-    -- Calculate target position with offset
-    local targetPosition = position + Vector3.new(0, flyHeight, 0)
-
-    -- Fly towards the target position
-    while (humanoidRootPart.Position - targetPosition).Magnitude > 1 do
-        if not humanoidRootPart or humanoid.Health <= 0 then break end  -- Stop if player dies
-
-        -- Calculate direction and move
-        local direction = (targetPosition - humanoidRootPart.Position).Unit
-        humanoidRootPart.Velocity = direction * flySpeed
-        task.wait()
-    end
-
-    -- Stop movement when close enough
-    if humanoidRootPart then
-        humanoidRootPart.Velocity = Vector3.zero
-    end
+local function getCoins()
+	local coins = {}
+	for _, coin in ipairs(workspace:GetDescendants()) do
+		if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+			table.insert(coins, coin)
+		end
+	end
+	return coins
 end
 
--- Main loop to fly to random coins continuously
 while true do
-    local coins = findCoins()
-    
-    if #coins > 0 then
-        -- Randomly select a new coin each time
-        local randomCoin = coins[math.random(1, #coins)]
-        if randomCoin:IsDescendantOf(workspace) then
-            flyToPosition(randomCoin.Position)  -- Fly to the random coin
-        end
-    else
-        warn("No coins found in any buildings!")
-    end
+	local coins = getCoins()
 
-    task.wait(1)  -- Wait 1 second before selecting a new random coin
+	if #coins == 0 then
+		task.wait(5)
+		continue
+	end
+
+	-- Pick a random coin
+	local coin = coins[math.random(#coins)]
+
+	if coin and coin.Parent then
+		local targetPos = coin.Position + Vector3.new(0, 0, 0)
+		if forceMoveTo(targetPos) then
+			visitedCoins[coin] = true
+			coin:Destroy()
+		end
+	end
+
+	task.wait(0.1)
 end
