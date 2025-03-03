@@ -2,11 +2,18 @@ local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Keep collisions disabled (fixes noclip issue)
+-- Ensure full noclip for everything except coins
 game:GetService("RunService").Stepped:Connect(function()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
-            part.CanCollide = false
+            -- Set collision off for all parts except coins
+            if part.Parent and part.Parent:IsA("Model") and part.Parent:FindFirstChild("MainCoin") then
+                -- Keep coins' collision intact
+                part.CanCollide = true
+            else
+                -- Disable collision for everything else
+                part.CanCollide = false
+            end
         end
     end
 end)
@@ -72,5 +79,5 @@ while true do
         coin:Destroy()
     end
 
-    task.wait(0.1)
+    task.wait(1)
 end
