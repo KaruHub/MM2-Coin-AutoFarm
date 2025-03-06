@@ -121,7 +121,7 @@ local Window = OrionLib:MakeWindow({
 
 local CoinFarmTab = Window:MakeTab({
     Name = "Farm Settings",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://4483345998",  -- Replace with a valid image ID or use an empty string if no icon is needed
     PremiumOnly = false
 })
 
