@@ -1,92 +1,103 @@
 local G2L = {}
 
--- StarterGui.ScreenGui
+-- ScreenGui Setup
 G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-G2L["1"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
 
--- StarterGui.ScreenGui.Main
+-- Main Frame Setup
 G2L["2"] = Instance.new("Frame", G2L["1"])
-G2L["2"].BorderSizePixel = 0
-G2L["2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-G2L["2"].Style = Enum.FrameStyle.RobloxRound
-G2L["2"].Size = UDim2.new(0, 272, 0, 383)
-G2L["2"].Position = UDim2.new(0.36689, 0, 0.29555, 0)
-G2L["2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-G2L["2"].Name = "Main"
+G2L["2"]["BorderSizePixel"] = 0
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["2"]["Size"] = UDim2.new(0, 272, 0, 383)
+G2L["2"]["Position"] = UDim2.new(0.36689, 0, 0.29555, 0)
 
--- StarterGui.ScreenGui.Main.TextLabel
+-- Title TextLabel
 G2L["3"] = Instance.new("TextLabel", G2L["2"])
-G2L["3"].TextWrapped = true
-G2L["3"].BorderSizePixel = 0
-G2L["3"].TextSize = 14
-G2L["3"].TextScaled = true
-G2L["3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-G2L["3"].Font = Enum.Font["PressStart2P"]  -- Corrected font
-G2L["3"].TextColor3 = Color3.fromRGB(0, 0, 0)
-G2L["3"].Size = UDim2.new(0, 200, 0, 50)
-G2L["3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-G2L["3"].Text = "Critic MM2 AutoFarm🍋"
+G2L["3"]["TextWrapped"] = true
+G2L["3"]["TextSize"] = 14
+G2L["3"]["TextScaled"] = true
+G2L["3"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+G2L["3"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["3"]["Size"] = UDim2.new(0, 200, 0, 50)
+G2L["3"]["Text"] = "Critic MM2 AutoFarm🍋"
 
--- StarterGui.ScreenGui.Main.TextLabel.UICorner
-G2L["4"] = Instance.new("UICorner", G2L["3"])
-
--- StarterGui.ScreenGui.Main.TextLabel.UIStroke
-G2L["5"] = Instance.new("UIStroke", G2L["3"])
-G2L["5"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-G2L["5"].Thickness = 3
-G2L["5"].Color = Color3.fromRGB(109, 109, 109)
-
--- Setup Anti-AFK Button
-G2L["e"] = Instance.new("TextButton", G2L["2"])
-G2L["e"].TextWrapped = true
-G2L["e"].BorderSizePixel = 0
-G2L["e"].TextColor3 = Color3.fromRGB(0, 0, 0)
-G2L["e"].TextSize = 14
-G2L["e"].TextScaled = true
-G2L["e"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-G2L["e"].Font = Enum.Font["PressStart2P"]  -- Corrected font
-G2L["e"].Size = UDim2.new(0, 200, 0, 50)
-G2L["e"].Name = "AFK"
-G2L["e"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-G2L["e"].Text = "Anti - AFK"
-G2L["e"].Style = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["e"].Position = UDim2.new(0.02735, 0, 0.54366, 0)
-
--- StarterGui.ScreenGui.Main.AFK.UICorner
-G2L["f"] = Instance.new("UICorner", G2L["e"])
-
--- Anti AFK logic
-local bb = game:GetService("VirtualUser")
-game:GetService("Players").LocalPlayer.Idled:Connect(function()
-    bb:CaptureController()
-    bb:ClickButton2(Vector2.new())
-end)
-
--- Minimize button functionality
+-- Minimize Button
 G2L["6"] = Instance.new("TextButton", G2L["2"])
-G2L["6"].TextWrapped = true
-G2L["6"].BorderSizePixel = 0
-G2L["6"].TextColor3 = Color3.fromRGB(0, 0, 0)
-G2L["6"].TextSize = 14
-G2L["6"].TextScaled = true
-G2L["6"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-G2L["6"].Font = Enum.Font["PressStart2P"]  -- Corrected font
-G2L["6"].Size = UDim2.new(0, 49, 0, 49)
-G2L["6"].Name = "Minimize"
-G2L["6"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-G2L["6"].Text = "Minimize"
-G2L["6"].Position = UDim2.new(0.81741, 0, -0.00224, 0)
+G2L["6"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["6"]["TextSize"] = 14
+G2L["6"]["TextScaled"] = true
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["6"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+G2L["6"]["Size"] = UDim2.new(0, 49, 0, 49)
+G2L["6"]["Text"] = "Minmize"
+G2L["6"]["Position"] = UDim2.new(0.81741, 0, -0.00224, 0)
 
--- Minimize button click toggle
-local minimized = false
+-- Coin Button
+G2L["a"] = Instance.new("TextButton", G2L["2"])
+G2L["a"]["TextWrapped"] = true
+G2L["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["a"]["TextSize"] = 14
+G2L["a"]["TextScaled"] = true
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["a"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+G2L["a"]["Size"] = UDim2.new(0, 200, 0, 50)
+G2L["a"]["Text"] = "Coin Farm"
+G2L["a"]["Position"] = UDim2.new(0.02768, 0, 0.19622, 0)
+
+-- Anti AFK Button
+G2L["e"] = Instance.new("TextButton", G2L["2"])
+G2L["e"]["TextWrapped"] = true
+G2L["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["e"]["TextSize"] = 14
+G2L["e"]["TextScaled"] = true
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["e"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+G2L["e"]["Size"] = UDim2.new(0, 200, 0, 50)
+G2L["e"]["Text"] = "Anti - AFK"
+G2L["e"]["Position"] = UDim2.new(0.02735, 0, 0.54366, 0)
+
+-- Placeholder Text for Status
+G2L["10"] = Instance.new("TextLabel", G2L["2"])
+G2L["10"]["TextWrapped"] = true
+G2L["10"]["TextSize"] = 14
+G2L["10"]["TextScaled"] = true
+G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["10"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+G2L["10"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["10"]["Size"] = UDim2.new(0, 200, 0, 50)
+G2L["10"]["Text"] = "Took me a long time to make this, also I made this GUI because my main UI didn't work for some reasons."
+G2L["10"]["Position"] = UDim2.new(0.05515, 0, 0.71279, 0)
+
+-- Minimize functionality
+local isMinimized = false
 G2L["6"].MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        G2L["2"].Visible = false
+    if isMinimized then
+        G2L["2"].Size = UDim2.new(0, 272, 0, 383) -- Restore the GUI size
+        isMinimized = false
     else
-        G2L["2"].Visible = true
+        G2L["2"].Size = UDim2.new(0, 272, 0, 50) -- Minimize the GUI
+        isMinimized = true
     end
 end)
 
--- Ensure the script works by waiting for the player
-return G2L["1"]
+-- Button Toggle functionality for Anti AFK and Coin Farm buttons
+local function toggleButton(button, activeText, inactiveText)
+    local isActive = false
+    button.MouseButton1Click:Connect(function()
+        if isActive then
+            button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Normal color
+            button.Text = inactiveText
+            isActive = false
+        else
+            button.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- Active color (Green)
+            button.Text = activeText
+            isActive = true
+        end
+    end)
+end
+
+-- Setup button toggles
+toggleButton(G2L["a"], "Coin Farm Active", "Coin Farm")
+toggleButton(G2L["e"], "Anti AFK Active", "Anti - AFK")
+
+return G2L["1"], require
