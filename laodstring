@@ -1,78 +1,59 @@
-local G2L = {}
+wait(0.5)
 
--- StarterGui.2
-G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-G2L["1"]["Name"] = "2"
-G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
+-- Create GUI elements
+local ba = Instance.new("ScreenGui")
+local ca = Instance.new("TextLabel")
+local da = Instance.new("Frame")
+local _b = Instance.new("TextLabel")
+local ab = Instance.new("TextLabel")
 
--- StarterGui.2.Frame
-G2L["2"] = Instance.new("Frame", G2L["1"])
-G2L["2"]["BorderSizePixel"] = 0
-G2L["2"]["BackgroundColor3"] = Color3.fromRGB(209, 209, 209)
-G2L["2"]["Size"] = UDim2.new(0, 255, 0, 140)
-G2L["2"]["Position"] = UDim2.new(0.74392, 0, 0.69715, 0)
-G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
+-- Parent GUI to CoreGui
+ba.Parent = game:GetService("CoreGui")
 
--- StarterGui.2.Frame.UICorner
-G2L["3"] = Instance.new("UICorner", G2L["2"])
+-- Setup TextLabel for "Anti AFK"
+ca.Parent = ba
+ca.Active = true
+ca.BackgroundColor3 = Color3.new(1, 1, 0)  -- Yellow
+ca.Draggable = true
+ca.Position = UDim2.new(0.6986, 0, 0.0981, 0)
+ca.Size = UDim2.new(0, 370, 0, 52)
+ca.Font = Enum.Font["PressStart2P"]
+ca.Text = "Anti AFK"
+ca.TextColor3 = Color3.new(1, 1, 0)  -- Yellow
+ca.TextSize = 22
 
--- StarterGui.2.Frame.TextLabel (Main Title)
-G2L["4"] = Instance.new("TextLabel", G2L["2"])
-G2L["4"]["TextWrapped"] = true
-G2L["4"]["BorderSizePixel"] = 0
-G2L["4"]["TextSize"] = 14
-G2L["4"]["TextScaled"] = true
-G2L["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["4"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["4"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["4"]["Size"] = UDim2.new(0, 255, 0, 50)
-G2L["4"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["4"]["Text"] = "Critc Anti - AFK 🍋"
+-- Setup Frame for status and scripts
+da.Parent = ca
+da.BackgroundColor3 = Color3.new(1, 1, 0)  -- Yellow
+da.Position = UDim2.new(0, 0, 1.02, 0)
+da.Size = UDim2.new(0, 370, 0, 107)
 
--- StarterGui.2.Frame.TextLabel.UICorner
-G2L["5"] = Instance.new("UICorner", G2L["4"])
+-- Setup TextLabel for "Critc Scripts"
+_b.Parent = da
+_b.BackgroundColor3 = Color3.new(1, 1, 0)  -- Yellow
+_b.Position = UDim2.new(0, 0, 0.8, 0)
+_b.Size = UDim2.new(0, 370, 0, 21)
+_b.Font = Enum.Font["PressStart2P"]
+_b.Text = "Critc Scripts🍋"
+_b.TextColor3 = Color3.new(1, 1, 0)  -- Yellow
+_b.TextSize = 20
 
--- StarterGui.2.Frame.TextLabel.UIStroke
-G2L["6"] = Instance.new("UIStroke", G2L["4"])
-G2L["6"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["6"]["Thickness"] = 3
-G2L["6"]["Color"] = Color3.fromRGB(255, 255, 0)
+-- Setup TextLabel for "Status: Active"
+ab.Parent = da
+ab.BackgroundColor3 = Color3.new(1, 1, 0)  -- Yellow
+ab.Position = UDim2.new(0, 0, 0.1584, 0)
+ab.Size = UDim2.new(0, 370, 0, 44)
+ab.Font = Enum.Font["PressStart2P"]
+ab.Text = "Status: Active"
+ab.TextColor3 = Color3.new(1, 1, 0)  -- Yellow
+ab.TextSize = 20
 
--- StarterGui.2.Frame.TextLabel (Status)
-G2L["7"] = Instance.new("TextLabel", G2L["2"])
-G2L["7"]["TextWrapped"] = true
-G2L["7"]["BorderSizePixel"] = 0
-G2L["7"]["TextSize"] = 14
-G2L["7"]["TextScaled"] = true
-G2L["7"]["BackgroundColor3"] = Color3.fromRGB(86, 255, 128)
-G2L["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["7"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["7"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["7"]["Text"] = "Active"
-G2L["7"]["Position"] = UDim2.new(0.10588, 0, 0.50714, 0)
-
--- StarterGui.2.Frame.UIStroke
-G2L["8"] = Instance.new("UIStroke", G2L["2"])
-G2L["8"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["8"]["Thickness"] = 3
-
--- Anti-AFK script to prevent kick and update the status text
-local virtualUser = game:GetService('VirtualUser')
-local status = G2L["7"] -- Get the status TextLabel for dynamic updates
-
-game:GetService('Players').LocalPlayer.Idled:Connect(function()
-    -- Prevent the player from getting kicked for being AFK
-    virtualUser:CaptureController()
-    virtualUser:ClickButton2(Vector2.new())
-
-    -- Update status text
-    status.Text = "Kicked AFK detection! Still active."
-    
-    -- Wait a bit before resetting the status
+-- Anti AFK logic
+local bb = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    bb:CaptureController()
+    bb:ClickButton2(Vector2.new())
+    ab.Text = "Roblox tried to kick you, but I kicked him instead"
     wait(2)
-    status.Text = "Status: Active"
+    ab.Text = "Status: Active"
 end)
-
--- Return the GUI for use or for other modules to use
-return G2L["1"], require
