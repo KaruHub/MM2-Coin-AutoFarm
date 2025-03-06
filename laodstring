@@ -29,6 +29,44 @@ mainFrame.Position = UDim2.new(0.36689, 0, 0.29555, 0)
 mainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 mainFrame.Name = "Main"
 
+-- Make GUI draggable
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updateInput(input)
+    end
+end)
+
+-- Title Label
 local titleLabel = Instance.new("TextLabel", mainFrame)
 titleLabel.TextWrapped = true
 titleLabel.BorderSizePixel = 0
@@ -47,6 +85,7 @@ titleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 titleStroke.Thickness = 3
 titleStroke.Color = Color3.fromRGB(109, 109, 109)
 
+-- Minimize Button
 local minimizeButton = Instance.new("TextButton", mainFrame)
 minimizeButton.TextWrapped = true
 minimizeButton.BorderSizePixel = 0
@@ -67,6 +106,7 @@ minimizeStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 minimizeStroke.Thickness = 3
 minimizeStroke.Color = Color3.fromRGB(109, 109, 109)
 
+-- Background Image
 local backgroundImage = Instance.new("ImageLabel", mainFrame)
 backgroundImage.BorderSizePixel = 0
 backgroundImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -76,6 +116,7 @@ backgroundImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
 backgroundImage.Name = "Backround"
 backgroundImage.Position = UDim2.new(0.028, 0, 0.18413, 0)
 
+-- Coin Farm Button
 local coinButton = Instance.new("TextButton", mainFrame)
 coinButton.TextWrapped = true
 coinButton.BorderSizePixel = 0
@@ -93,6 +134,7 @@ coinButton.Position = UDim2.new(0.02768, 0, 0.19622, 0)
 
 local coinCorner = Instance.new("UICorner", coinButton)
 
+-- Kill Button
 local killButton = Instance.new("TextButton", mainFrame)
 killButton.TextWrapped = true
 killButton.BorderSizePixel = 0
@@ -110,6 +152,7 @@ killButton.Position = UDim2.new(0.02906, 0, 0.37118, 0)
 
 local killCorner = Instance.new("UICorner", killButton)
 
+-- Anti-AFK Button
 local afkButton = Instance.new("TextButton", mainFrame)
 afkButton.TextWrapped = true
 afkButton.BorderSizePixel = 0
@@ -127,6 +170,7 @@ afkButton.Position = UDim2.new(0.02735, 0, 0.54366, 0)
 
 local afkCorner = Instance.new("UICorner", afkButton)
 
+-- Info Label
 local infoLabel = Instance.new("TextLabel", mainFrame)
 infoLabel.TextWrapped = true
 infoLabel.BorderSizePixel = 0
@@ -206,9 +250,41 @@ local function toggleCoinFarm()
 
         -- Farm loop
         task.spawn(function()
-            while coinFarmActive do
-                -- [Your coin collection logic here]
+            while coinFarmActive and character and hrp do
+                -- Find all coins
+                local coins = {}
+                for _, coin in ipairs(workspace:GetDescendants()) do
+                    if coin:IsA("MeshPart") and coin.Name == "MainCoin" then
+                        table.insert(coins, coin)
+                    end
+                end
+
+                -- Find the closest coin
+                local closestCoin = nil
+                local closestDistance = math.huge
+                for _, coin in ipairs(coins) do
+                    local distance = (hrp.Position - coin.Position).Magnitude
+                    if distance < closestDistance then
+                        closestDistance = distance
+                        closestCoin = coin
+                    end
+                end
+
+                -- Move toward the closest coin
+                if closestCoin then
+                    local direction = (closestCoin.Position - hrp.Position).Unit
+                    bodyVelocity.Velocity = direction * 50 -- Adjust speed as needed
+                else
+                    bodyVelocity.Velocity = Vector3.zero
+                end
+
                 task.wait()
+            end
+
+            -- Cleanup when loop ends
+            if bodyVelocity then
+                bodyVelocity:Destroy()
+                bodyVelocity = nil
             end
         end)
     else
