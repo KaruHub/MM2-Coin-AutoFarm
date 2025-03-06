@@ -2,24 +2,23 @@ local player = game:GetService("Players").LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Ensure full noclip for everything except coins
+-- Enable noclip but keep collision for coins
 game:GetService("RunService").Stepped:Connect(function()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
-            -- Set collision off for all parts except coins
-            if part.Parent and part.Parent:IsA("Model") and part.Parent:FindFirstChild("MainCoin") then
-                -- Keep coins' collision intact
+            -- Enable collision only for the MainCoin parts
+            if part.Name == "MainCoin" then
                 part.CanCollide = true
             else
-                -- Disable collision for everything else
                 part.CanCollide = false
+                part.Velocity = Vector3.new() -- Optional: Reset velocity for smoother movement
             end
         end
     end
 end)
 
 local FLY_SPEED = 30
-local ARRIVAL_THRESHOLD = 1 -- Reduce so it stops exactly inside the coin
+local ARRIVAL_THRESHOLD = 1
 local visitedCoins = {}
 
 local function forceMoveTo(targetPos)
@@ -27,7 +26,7 @@ local function forceMoveTo(targetPos)
     local startTime = tick()
 
     while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-        if tick() - startTime > 10 then -- Timeout failsafe
+        if tick() - startTime > 10 then -- Timeout after 10 seconds
             hrp.Velocity = Vector3.zero
             return false
         end
@@ -69,11 +68,12 @@ while true do
     local coin = getClosestCoin()
     
     if not coin then
+        -- No coins left, check again after delay
         task.wait(5)
         continue
     end
 
-    local targetPos = coin.Position -- Directly inside the coin
+    local targetPos = coin.Position
     if forceMoveTo(targetPos) then
         visitedCoins[coin] = true
         coin:Destroy()
