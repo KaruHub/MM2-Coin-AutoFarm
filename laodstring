@@ -1,77 +1,135 @@
--- Load Orion Library
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source"))()
+-- Ensure you have the Orion Hub library properly installed and initialized
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/OrionU/IronHub/main/OrionLib.lua"))()
 
--- Variables
+-- Player and movement settings
 local player = game:GetService("Players").LocalPlayer
-local farming = false
-local noclipConnection
+local FLY_SPEED = 26 -- Updated speed of movement
+local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
+local visitedCoins = {}
+local isCoinFarmActive = false  -- Track if the Coin Farm is active
 
--- Function to enable noclip
-local function enableNoclip()
-    if noclipConnection then return end
-    noclipConnection = game:GetService("RunService").Stepped:Connect(function()
-        if player.Character then
-            for _, part in ipairs(player.Character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = false
-                end
+-- Function to initialize the character
+local function initializeCharacter(character)
+    local hrp = character:WaitForChild("HumanoidRootPart")
+
+    -- Enable noclip for the character
+    game:GetService("RunService").Stepped:Connect(function()
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
             end
         end
     end)
-end
 
--- Function to disable noclip
-local function disableNoclip()
-    if noclipConnection then
-        noclipConnection:Disconnect()
-        noclipConnection = nil
+    -- Create a BodyVelocity object for smooth movement
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bodyVelocity.Velocity = Vector3.zero
+    bodyVelocity.Parent = hrp
+
+    -- Function to move the character to a target position
+    local function forceMoveTo(targetPos)
+        local startTime = tick()
+
+        while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+            if tick() - startTime > 10 then -- Timeout after 10 seconds
+                bodyVelocity.Velocity = Vector3.zero
+                return false
+            end
+
+            -- Calculate direction and set velocity
+            local direction = (targetPos - hrp.Position).Unit
+            bodyVelocity.Velocity = direction * FLY_SPEED
+            task.wait()
+        end
+
+        bodyVelocity.Velocity = Vector3.zero
+        return true
     end
-    if player.Character then
-        for _, part in ipairs(player.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = true
+
+    -- Function to get all uncollected coins
+    local function getCoins()
+        local coins = {}
+        for _, coin in ipairs(workspace:GetDescendants()) do
+            if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+                table.insert(coins, coin)
             end
         end
+        return coins
     end
-end
 
--- Coin Farming Function
-local function startFarming()
-    enableNoclip()
-    while farming do
-        local coin = workspace:FindFirstChild("MainCoin", true)
-        if coin and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-            player.Character.HumanoidRootPart.CFrame = coin.CFrame
-            task.wait(0.5)
-        else
-            task.wait(1)
+    -- Function to find the closest coin
+    local function getClosestCoin()
+        local coins = getCoins()
+        local closestCoin = nil
+        local shortestDistance = math.huge
+
+        for _, coin in ipairs(coins) do
+            local distance = (hrp.Position - coin.Position).Magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                closestCoin = coin
+            end
         end
+
+        return closestCoin
     end
-    disableNoclip()
+
+    -- Main loop to collect coins
+    while true do
+        if isCoinFarmActive then
+            local coin = getClosestCoin()
+
+            if not coin then
+                -- No coins left, wait and check again
+                task.wait(5)
+                continue
+            end
+
+            -- Move to the coin
+            local targetPos = coin.Position
+            if forceMoveTo(targetPos) then
+                visitedCoins[coin] = true
+                coin:Destroy() -- Destroy the coin locally
+            end
+        else
+            task.wait(1) -- Wait if Coin Farm is inactive
+        end
+
+        task.wait(0.1) -- Small delay before checking for the next coin
+    end
 end
 
--- GUI
+-- Handle character initialization and respawning
+local function onCharacterAdded(character)
+    initializeCharacter(character)
+end
+
+-- Connect the character added event
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Initialize the current character if it already exists
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+
+-- Orion UI setup for Coin Farm toggle
 local Window = OrionLib:MakeWindow({
-    Name = "Coin Farm",
-    HidePremium = false,
-    SaveConfig = false,
-    ConfigFolder = "Orion_CoinFarm"
+    Name = "Coin Farm Menu", 
+    HidePremium = true
 })
 
-local Tab = Window:MakeTab({
-    Name = "Main",
+local CoinFarmTab = Window:MakeTab({
+    Name = "Farm Settings",
     Icon = "rbxassetid://4483345998",
     PremiumOnly = false
 })
 
-Tab:AddToggle({
-    Name = "Enable Coin Farm",
+CoinFarmTab:AddToggle({
+    Name = "Coin Farm",
     Default = false,
-    Callback = function(state)
-        farming = state
-        if farming then
-            startFarming()
-        end
+    Callback = function(value)
+        isCoinFarmActive = value  -- Toggle the Coin Farm functionality on/off
     end
 })
 
