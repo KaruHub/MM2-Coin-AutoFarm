@@ -1,4 +1,4 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source")))()
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source")))
 local player = game:GetService("Players").LocalPlayer
 local FLY_SPEED = 26
 local ARRIVAL_THRESHOLD = 1
