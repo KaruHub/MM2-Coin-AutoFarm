@@ -1,7 +1,5 @@
--- Ensure you have the Orion Hub library properly installed and initialized
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/OrionU/IronHub/main/OrionLib.lua"))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
--- Player and movement settings
 local player = game:GetService("Players").LocalPlayer
 local FLY_SPEED = 26 -- Updated speed of movement
 local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
@@ -116,7 +114,9 @@ end
 -- Orion UI setup for Coin Farm toggle
 local Window = OrionLib:MakeWindow({
     Name = "Coin Farm Menu", 
-    HidePremium = true
+    HidePremium = true,
+    SaveConfig = true,
+    ConfigFolder = "CoinFarmConfig"
 })
 
 local CoinFarmTab = Window:MakeTab({
@@ -128,6 +128,8 @@ local CoinFarmTab = Window:MakeTab({
 CoinFarmTab:AddToggle({
     Name = "Coin Farm",
     Default = false,
+    Save = true,
+    Flag = "coinFarmToggle",
     Callback = function(value)
         isCoinFarmActive = value  -- Toggle the Coin Farm functionality on/off
     end
