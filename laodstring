@@ -1,168 +1,158 @@
 local G2L = {}
+local coinFarmActive = false
+local afkEnabled = false
+local bodyVelocity = nil
 
--- StarterGui.ScreenGui
-G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
+-- ========== PERSISTENT GUI SETUP ========== --
+local player = game:GetService("Players").LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- StarterGui.ScreenGui.Main
-G2L["2"] = Instance.new("Frame", G2L["1"])
-G2L["2"]["BorderSizePixel"] = 0
-G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["2"]["Style"] = Enum.FrameStyle.RobloxRound
-G2L["2"]["Size"] = UDim2.new(0, 272, 0, 383)
-G2L["2"]["Position"] = UDim2.new(0.36689, 0, 0.29555, 0)
-G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["2"]["Name"] = "Main"
-
--- StarterGui.ScreenGui.Main.TextLabel
-G2L["3"] = Instance.new("TextLabel", G2L["2"])
-G2L["3"]["TextWrapped"] = true
-G2L["3"]["BorderSizePixel"] = 0
-G2L["3"]["TextSize"] = 14
-G2L["3"]["TextScaled"] = true
-G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["3"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["3"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["3"]["Text"] = "Critic MM2 AutoFarm🍋"
-
--- StarterGui.ScreenGui.Main.TextLabel.UICorner
-G2L["4"] = Instance.new("UICorner", G2L["3"])
-
--- StarterGui.ScreenGui.Main.TextLabel.UIStroke
-G2L["5"] = Instance.new("UIStroke", G2L["3"])
-G2L["5"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["5"]["Thickness"] = 3
-G2L["5"]["Color"] = Color3.fromRGB(109, 109, 109)
-
--- StarterGui.ScreenGui.Main.Minimize
-G2L["6"] = Instance.new("TextButton", G2L["2"])
-G2L["6"]["TextWrapped"] = true
-G2L["6"]["BorderSizePixel"] = 0
-G2L["6"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["6"]["TextSize"] = 14
-G2L["6"]["TextScaled"] = true
-G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["6"]["Size"] = UDim2.new(0, 49, 0, 49)
-G2L["6"]["Name"] = "Minimize"
-G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["6"]["Text"] = "Minmize"
-G2L["6"]["Position"] = UDim2.new(0.81741, 0, -0.00224, 0)
-
--- StarterGui.ScreenGui.Main.Minimize.UICorner
-G2L["7"] = Instance.new("UICorner", G2L["6"])
-
--- StarterGui.ScreenGui.Main.Minimize.UIStroke
-G2L["8"] = Instance.new("UIStroke", G2L["6"])
-G2L["8"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["8"]["Thickness"] = 3
-G2L["8"]["Color"] = Color3.fromRGB(109, 109, 109)
-
--- StarterGui.ScreenGui.Main.Backround
-G2L["9"] = Instance.new("ImageLabel", G2L["2"])
-G2L["9"]["BorderSizePixel"] = 0
-G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["9"]["Image"] = "http://www.roblox.com/asset/?id=2100841516"
-G2L["9"]["Size"] = UDim2.new(0, 245, 0, 297)
-G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["9"]["Name"] = "Backround"
-G2L["9"]["Position"] = UDim2.new(0.028, 0, 0.18413, 0)
-
--- StarterGui.ScreenGui.Main.Coin
-G2L["a"] = Instance.new("TextButton", G2L["2"])
-G2L["a"]["TextWrapped"] = true
-G2L["a"]["BorderSizePixel"] = 0
-G2L["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["a"]["TextSize"] = 14
-G2L["a"]["TextScaled"] = true
-G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["a"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["a"]["Name"] = "Coin"
-G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["a"]["Text"] = "Coin Farm"
-G2L["a"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["a"]["Position"] = UDim2.new(0.02768, 0, 0.19622, 0)
-
--- StarterGui.ScreenGui.Main.Coin.UICorner
-G2L["b"] = Instance.new("UICorner", G2L["a"])
-
--- StarterGui.ScreenGui.Main.Kill
-G2L["c"] = Instance.new("TextButton", G2L["2"])
-G2L["c"]["TextWrapped"] = true
-G2L["c"]["BorderSizePixel"] = 0
-G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["c"]["TextSize"] = 14
-G2L["c"]["TextScaled"] = true
-G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["c"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["c"]["Name"] = "Kill"
-G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["c"]["Text"] = "Fling all when bag full"
-G2L["c"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["c"]["Position"] = UDim2.new(0.02906, 0, 0.37118, 0)
-
--- StarterGui.ScreenGui.Main.Kill.UICorner
-G2L["d"] = Instance.new("UICorner", G2L["c"])
-
--- StarterGui.ScreenGui.Main.AFK
-G2L["e"] = Instance.new("TextButton", G2L["2"])
-G2L["e"]["TextWrapped"] = true
-G2L["e"]["BorderSizePixel"] = 0
-G2L["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["e"]["TextSize"] = 14
-G2L["e"]["TextScaled"] = true
-G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["e"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["e"]["Name"] = "AFK"
-G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["e"]["Text"] = "Anti - AFK"
-G2L["e"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["e"]["Position"] = UDim2.new(0.02735, 0, 0.54366, 0)
-
--- StarterGui.ScreenGui.Main.AFK.UICorner
-G2L["f"] = Instance.new("UICorner", G2L["e"])
-
--- StarterGui.ScreenGui.Main.TextLabel
-G2L["10"] = Instance.new("TextLabel", G2L["2"])
-G2L["10"]["TextWrapped"] = true
-G2L["10"]["BorderSizePixel"] = 0
-G2L["10"]["TextSize"] = 14
-G2L["10"]["TextScaled"] = true
-G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["10"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["10"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["10"]["Text"] = "Took me a long time to make this, also i made this gui becasue my main ui didnt work for some reasons."
-G2L["10"]["Position"] = UDim2.new(0.05515, 0, 0.71279, 0)
-
--- StarterGui.ScreenGui.Main.TextLabel.UICorner
-G2L["11"] = Instance.new("UICorner", G2L["10"])
-
--- StarterGui.ScreenGui.Main.TextLabel.UIStroke
-G2L["12"] = Instance.new("UIStroke", G2L["10"])
-G2L["12"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["12"]["Thickness"] = 3
-G2L["12"]["Color"] = Color3.fromRGB(109, 109, 109)
+-- Main GUI
+local mainGui = Instance.new("ScreenGui", playerGui)
+mainGui.Name = "MainGUI"
+mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+mainGui.ResetOnSpawn = false -- Ensures GUI persists after respawn
 
 -- Anti-AFK GUI
-local afkGui = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+local afkGui = Instance.new("ScreenGui", playerGui)
 afkGui.Name = "AntiAFK"
 afkGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+afkGui.ResetOnSpawn = false -- Ensures GUI persists after respawn
 
+-- ========== MAIN GUI CONSTRUCTION ========== --
+local mainFrame = Instance.new("Frame", mainGui)
+mainFrame.BorderSizePixel = 0
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.Style = Enum.FrameStyle.RobloxRound
+mainFrame.Size = UDim2.new(0, 272, 0, 383)
+mainFrame.Position = UDim2.new(0.36689, 0, 0.29555, 0)
+mainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.Name = "Main"
+
+local titleLabel = Instance.new("TextLabel", mainFrame)
+titleLabel.TextWrapped = true
+titleLabel.BorderSizePixel = 0
+titleLabel.TextSize = 14
+titleLabel.TextScaled = true
+titleLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+titleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+titleLabel.Size = UDim2.new(0, 200, 0, 50)
+titleLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+titleLabel.Text = "Critic MM2 AutoFarm🍋"
+
+local titleCorner = Instance.new("UICorner", titleLabel)
+local titleStroke = Instance.new("UIStroke", titleLabel)
+titleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+titleStroke.Thickness = 3
+titleStroke.Color = Color3.fromRGB(109, 109, 109)
+
+local minimizeButton = Instance.new("TextButton", mainFrame)
+minimizeButton.TextWrapped = true
+minimizeButton.BorderSizePixel = 0
+minimizeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+minimizeButton.TextSize = 14
+minimizeButton.TextScaled = true
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+minimizeButton.Size = UDim2.new(0, 49, 0, 49)
+minimizeButton.Name = "Minimize"
+minimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+minimizeButton.Text = "Minmize"
+minimizeButton.Position = UDim2.new(0.81741, 0, -0.00224, 0)
+
+local minimizeCorner = Instance.new("UICorner", minimizeButton)
+local minimizeStroke = Instance.new("UIStroke", minimizeButton)
+minimizeStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+minimizeStroke.Thickness = 3
+minimizeStroke.Color = Color3.fromRGB(109, 109, 109)
+
+local backgroundImage = Instance.new("ImageLabel", mainFrame)
+backgroundImage.BorderSizePixel = 0
+backgroundImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+backgroundImage.Image = "http://www.roblox.com/asset/?id=2100841516"
+backgroundImage.Size = UDim2.new(0, 245, 0, 297)
+backgroundImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+backgroundImage.Name = "Backround"
+backgroundImage.Position = UDim2.new(0.028, 0, 0.18413, 0)
+
+local coinButton = Instance.new("TextButton", mainFrame)
+coinButton.TextWrapped = true
+coinButton.BorderSizePixel = 0
+coinButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+coinButton.TextSize = 14
+coinButton.TextScaled = true
+coinButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+coinButton.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+coinButton.Size = UDim2.new(0, 200, 0, 50)
+coinButton.Name = "Coin"
+coinButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+coinButton.Text = "Coin Farm"
+coinButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
+coinButton.Position = UDim2.new(0.02768, 0, 0.19622, 0)
+
+local coinCorner = Instance.new("UICorner", coinButton)
+
+local killButton = Instance.new("TextButton", mainFrame)
+killButton.TextWrapped = true
+killButton.BorderSizePixel = 0
+killButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+killButton.TextSize = 14
+killButton.TextScaled = true
+killButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+killButton.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+killButton.Size = UDim2.new(0, 200, 0, 50)
+killButton.Name = "Kill"
+killButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+killButton.Text = "Fling all when bag full"
+killButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
+killButton.Position = UDim2.new(0.02906, 0, 0.37118, 0)
+
+local killCorner = Instance.new("UICorner", killButton)
+
+local afkButton = Instance.new("TextButton", mainFrame)
+afkButton.TextWrapped = true
+afkButton.BorderSizePixel = 0
+afkButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+afkButton.TextSize = 14
+afkButton.TextScaled = true
+afkButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+afkButton.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+afkButton.Size = UDim2.new(0, 200, 0, 50)
+afkButton.Name = "AFK"
+afkButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+afkButton.Text = "Anti - AFK"
+afkButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
+afkButton.Position = UDim2.new(0.02735, 0, 0.54366, 0)
+
+local afkCorner = Instance.new("UICorner", afkButton)
+
+local infoLabel = Instance.new("TextLabel", mainFrame)
+infoLabel.TextWrapped = true
+infoLabel.BorderSizePixel = 0
+infoLabel.TextSize = 14
+infoLabel.TextScaled = true
+infoLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+infoLabel.FontFace = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+infoLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+infoLabel.Size = UDim2.new(0, 200, 0, 50)
+infoLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+infoLabel.Text = "Took me a long time to make this, also i made this gui becasue my main ui didnt work for some reasons."
+infoLabel.Position = UDim2.new(0.05515, 0, 0.71279, 0)
+
+local infoCorner = Instance.new("UICorner", infoLabel)
+local infoStroke = Instance.new("UIStroke", infoLabel)
+infoStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+infoStroke.Thickness = 3
+infoStroke.Color = Color3.fromRGB(109, 109, 109)
+
+-- ========== ANTI-AFK GUI CONSTRUCTION ========== --
 local afkFrame = Instance.new("Frame", afkGui)
 afkFrame.BorderSizePixel = 0
 afkFrame.BackgroundColor3 = Color3.fromRGB(209, 209, 209)
 afkFrame.Size = UDim2.new(0, 255, 0, 140)
 afkFrame.Position = UDim2.new(0.74392, 0, 0.69715, 0)
-afkFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-
-local afkCorner = Instance.new("UICorner", afkFrame)
+afkFrame.Visible = false -- Hidden by default
 
 local afkTitle = Instance.new("TextLabel", afkFrame)
 afkTitle.TextWrapped = true
@@ -177,7 +167,6 @@ afkTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 afkTitle.Text = "Critc Anti - AFK 🍋"
 
 local afkTitleCorner = Instance.new("UICorner", afkTitle)
-
 local afkTitleStroke = Instance.new("UIStroke", afkTitle)
 afkTitleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 afkTitleStroke.Thickness = 3
@@ -200,29 +189,63 @@ local afkFrameStroke = Instance.new("UIStroke", afkFrame)
 afkFrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 afkFrameStroke.Thickness = 3
 
--- Anti-AFK Function
-local afkExecuted = false
+-- ========== COIN FARM TOGGLE ========== --
+local function toggleCoinFarm()
+    coinFarmActive = not coinFarmActive
+    coinButton.TextColor3 = coinFarmActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
+    
+    if coinFarmActive then
+        -- Initialize farm
+        local character = player.Character or player.CharacterAdded:Wait()
+        local hrp = character:WaitForChild("HumanoidRootPart")
+        
+        -- Movement control
+        bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+        bodyVelocity.Parent = hrp
 
-G2L["e"].MouseButton1Click:Connect(function()
-    if afkExecuted then return end
-    afkExecuted = true
-    G2L["e"].TextColor3 = Color3.fromRGB(128, 0, 128) -- Purple when executed
-
-    local virtualUser = game:GetService('VirtualUser')
-    game:GetService('Players').LocalPlayer.Idled:Connect(function()
-        virtualUser:CaptureController()
-        virtualUser:ClickButton2(Vector2.new())
-        afkStatus.Text = "Kicked AFK detection! Still active."
-        wait(2)
-        afkStatus.Text = "Status: Active"
-    end)
-end)
-
--- GUI Persistence
-local function onCharacterAdded(character)
-    -- Reinitialize GUI if needed
+        -- Farm loop
+        task.spawn(function()
+            while coinFarmActive do
+                -- [Your coin collection logic here]
+                task.wait()
+            end
+        end)
+    else
+        -- Cleanup
+        if bodyVelocity then
+            bodyVelocity:Destroy()
+            bodyVelocity = nil
+        end
+    end
 end
 
-game:GetService("Players").LocalPlayer.CharacterAdded:Connect(onCharacterAdded)
+coinButton.MouseButton1Click:Connect(toggleCoinFarm)
 
-return G2L["1"], require
+-- ========== ANTI-AFK TOGGLE ========== --
+afkButton.MouseButton1Click:Connect(function()
+    if not afkEnabled then
+        afkEnabled = true
+        afkButton.TextColor3 = Color3.fromRGB(128, 0, 128)
+        afkFrame.Visible = true
+        
+        -- Anti-AFK functionality
+        local virtualUser = game:GetService("VirtualUser")
+        player.Idled:Connect(function()
+            virtualUser:CaptureController()
+            virtualUser:ClickButton2(Vector2.new())
+            afkStatus.Text = "Kicked AFK detection! Still active."
+            task.wait(2)
+            afkStatus.Text = "Status: Active"
+        end)
+    end
+end)
+
+-- ========== RESPAWN HANDLING ========== --
+player.CharacterAdded:Connect(function(character)
+    if coinFarmActive then
+        -- Reinitialize farm components
+        toggleCoinFarm() -- Force refresh
+        toggleCoinFarm()
+    end
+end)
