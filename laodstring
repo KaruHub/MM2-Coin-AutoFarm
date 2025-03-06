@@ -1,5 +1,5 @@
 local player = game:GetService("Players").LocalPlayer
-local FLY_SPEED = 26 -- Speed of movement
+local FLY_SPEED = 26 -- Updated speed of movement
 local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
 local visitedCoins = {}
 
