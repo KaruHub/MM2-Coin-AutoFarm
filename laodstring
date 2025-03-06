@@ -1,5 +1,3 @@
-local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonhirst/Orion/main/source'))()
-
 local player = game:GetService("Players").LocalPlayer
 local FLY_SPEED = 26 -- Updated speed of movement
 local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
@@ -111,28 +109,41 @@ if player.Character then
     onCharacterAdded(player.Character)
 end
 
--- Orion UI setup for Coin Farm toggle
-local Window = OrionLib:MakeWindow({
-    Name = "Coin Farm Menu", 
-    HidePremium = true,
-    SaveConfig = true,
-    ConfigFolder = "CoinFarmConfig"
-})
+-- GUI setup
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
-local CoinFarmTab = Window:MakeTab({
-    Name = "Farm Settings",
-    Icon = "rbxassetid://4483345998",  -- Replace with a valid image ID or use an empty string if no icon is needed
-    PremiumOnly = false
-})
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 300, 0, 200)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+mainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+mainFrame.Parent = screenGui
 
-CoinFarmTab:AddToggle({
-    Name = "Coin Farm",
-    Default = false,
-    Save = true,
-    Flag = "coinFarmToggle",
-    Callback = function(value)
-        isCoinFarmActive = value  -- Toggle the Coin Farm functionality on/off
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 300, 0, 50)
+titleLabel.Position = UDim2.new(0, 0, 0, 0)
+titleLabel.Text = "Coin Farm"
+titleLabel.TextSize = 24
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.BackgroundTransparency = 1
+titleLabel.TextAlign = Enum.TextAlign.Center
+titleLabel.Parent = mainFrame
+
+local farmCheckbox = Instance.new("TextButton")
+farmCheckbox.Size = UDim2.new(0, 200, 0, 50)
+farmCheckbox.Position = UDim2.new(0.5, -100, 0, 60)
+farmCheckbox.Text = "Enable Coin Farm"
+farmCheckbox.TextSize = 20
+farmCheckbox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+farmCheckbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+farmCheckbox.Parent = mainFrame
+
+-- Function to toggle Coin Farm
+farmCheckbox.MouseButton1Click:Connect(function()
+    isCoinFarmActive = not isCoinFarmActive
+    if isCoinFarmActive then
+        farmCheckbox.Text = "Disable Coin Farm"
+    else
+        farmCheckbox.Text = "Enable Coin Farm"
     end
-})
-
-OrionLib:Init()
+end)
