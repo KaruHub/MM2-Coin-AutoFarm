@@ -1,4 +1,3 @@
--- GUI Setup
 local G2L = {};
 
 -- StarterGui.ScreenGui
@@ -13,21 +12,65 @@ G2L["2"]["Style"] = Enum.FrameStyle.RobloxRound;
 G2L["2"]["Size"] = UDim2.new(0, 272, 0, 383);
 G2L["2"]["Position"] = UDim2.new(0.36689, 0, 0.29555, 0);
 G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-G2L["2"]["Name"] = "Main";
+G2L["2"]["Name"] = [[Main]];
 
--- Add Text Label for the Title
+-- StarterGui.ScreenGui.Main.TextLabel
 G2L["3"] = Instance.new("TextLabel", G2L["2"]);
 G2L["3"]["TextWrapped"] = true;
 G2L["3"]["BorderSizePixel"] = 0;
 G2L["3"]["TextSize"] = 14;
 G2L["3"]["TextScaled"] = true;
 G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["3"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 G2L["3"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["3"]["Size"] = UDim2.new(0, 200, 0, 50);
-G2L["3"]["Text"] = "Critic MM2 AutoFarm🍋";
+G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["3"]["Text"] = [[Critic MM2 AutoFarm🍋]];
 
--- Add Button for Coin Farm
+-- StarterGui.ScreenGui.Main.TextLabel.UICorner
+G2L["4"] = Instance.new("UICorner", G2L["3"]);
+
+-- StarterGui.ScreenGui.Main.TextLabel.UIStroke
+G2L["5"] = Instance.new("UIStroke", G2L["3"]);
+G2L["5"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+G2L["5"]["Thickness"] = 3;
+G2L["5"]["Color"] = Color3.fromRGB(109, 109, 109);
+
+-- StarterGui.ScreenGui.Main.Minimize
+G2L["6"] = Instance.new("TextButton", G2L["2"]);
+G2L["6"]["TextWrapped"] = true;
+G2L["6"]["BorderSizePixel"] = 0;
+G2L["6"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["6"]["TextSize"] = 14;
+G2L["6"]["TextScaled"] = true;
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["6"]["Size"] = UDim2.new(0, 49, 0, 49);
+G2L["6"]["Name"] = [[Minimize]];
+G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["6"]["Text"] = [[Minmize]];
+G2L["6"]["Position"] = UDim2.new(0.81741, 0, -0.00224, 0);
+
+-- StarterGui.ScreenGui.Main.Minimize.UICorner
+G2L["7"] = Instance.new("UICorner", G2L["6"]);
+
+-- StarterGui.ScreenGui.Main.Minimize.UIStroke
+G2L["8"] = Instance.new("UIStroke", G2L["6"]);
+G2L["8"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+G2L["8"]["Thickness"] = 3;
+G2L["8"]["Color"] = Color3.fromRGB(109, 109, 109);
+
+-- StarterGui.ScreenGui.Main.Backround
+G2L["9"] = Instance.new("ImageLabel", G2L["2"]);
+G2L["9"]["BorderSizePixel"] = 0;
+G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["9"]["Image"] = [[http://www.roblox.com/asset/?id=2100841516]];
+G2L["9"]["Size"] = UDim2.new(0, 245, 0, 297);
+G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["9"]["Name"] = [[Backround]];
+G2L["9"]["Position"] = UDim2.new(0.028, 0, 0.18413, 0);
+
+-- StarterGui.ScreenGui.Main.Coin
 G2L["a"] = Instance.new("TextButton", G2L["2"]);
 G2L["a"]["TextWrapped"] = true;
 G2L["a"]["BorderSizePixel"] = 0;
@@ -35,129 +78,188 @@ G2L["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
 G2L["a"]["TextSize"] = 14;
 G2L["a"]["TextScaled"] = true;
 G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-G2L["a"]["FontFace"] = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 G2L["a"]["Size"] = UDim2.new(0, 200, 0, 50);
-G2L["a"]["Text"] = "Coin Farm";
+G2L["a"]["Name"] = [[Coin]];
+G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["a"]["Text"] = [[Coin Farm]];
+G2L["a"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton;
 G2L["a"]["Position"] = UDim2.new(0.02768, 0, 0.19622, 0);
 
--- Add button corner and stroke
+-- StarterGui.ScreenGui.Main.Coin.UICorner
 G2L["b"] = Instance.new("UICorner", G2L["a"]);
 
--- Coin Farm Script Logic
-local player = game:GetService("Players").LocalPlayer
-local FLY_SPEED = 26 -- Updated speed of movement
-local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
-local visitedCoins = {}
+-- StarterGui.ScreenGui.Main.Kill
+G2L["c"] = Instance.new("TextButton", G2L["2"]);
+G2L["c"]["TextWrapped"] = true;
+G2L["c"]["BorderSizePixel"] = 0;
+G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["TextSize"] = 14;
+G2L["c"]["TextScaled"] = true;
+G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["c"]["Size"] = UDim2.new(0, 200, 0, 50);
+G2L["c"]["Name"] = [[Kill]];
+G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["c"]["Text"] = [[Fling all when bag full]];
+G2L["c"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton;
+G2L["c"]["Position"] = UDim2.new(0.02906, 0, 0.37118, 0);
 
--- Function to initialize the character
-local function initializeCharacter(character)
-    local hrp = character:WaitForChild("HumanoidRootPart")
+-- StarterGui.ScreenGui.Main.Kill.UICorner
+G2L["d"] = Instance.new("UICorner", G2L["c"]);
 
-    -- Enable noclip for the character
-    game:GetService("RunService").Stepped:Connect(function()
-        for _, part in ipairs(character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                part.CanCollide = false
+-- StarterGui.ScreenGui.Main.AFK
+G2L["e"] = Instance.new("TextButton", G2L["2"]);
+G2L["e"]["TextWrapped"] = true;
+G2L["e"]["BorderSizePixel"] = 0;
+G2L["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["TextSize"] = 14;
+G2L["e"]["TextScaled"] = true;
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["e"]["Size"] = UDim2.new(0, 200, 0, 50);
+G2L["e"]["Name"] = [[AFK]];
+G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["e"]["Text"] = [[Anti - AFK]];
+G2L["e"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton;
+G2L["e"]["Position"] = UDim2.new(0.02735, 0, 0.54366, 0);
+
+-- StarterGui.ScreenGui.Main.AFK.UICorner
+G2L["f"] = Instance.new("UICorner", G2L["e"]);
+
+-- StarterGui.ScreenGui.Main.TextLabel
+G2L["10"] = Instance.new("TextLabel", G2L["2"]);
+G2L["10"]["TextWrapped"] = true;
+G2L["10"]["BorderSizePixel"] = 0;
+G2L["10"]["TextSize"] = 14;
+G2L["10"]["TextScaled"] = true;
+G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+G2L["10"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["10"]["Size"] = UDim2.new(0, 200, 0, 50);
+G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+G2L["10"]["Text"] = [[Took me a long time to make this, also i made this gui becasue my main ui didnt work for some reasons.]];
+G2L["10"]["Position"] = UDim2.new(0.05515, 0, 0.71279, 0);
+
+-- StarterGui.ScreenGui.Main.TextLabel.UICorner
+G2L["11"] = Instance.new("UICorner", G2L["10"]);
+
+-- StarterGui.ScreenGui.Main.TextLabel.UIStroke
+G2L["12"] = Instance.new("UIStroke", G2L["10"]);
+G2L["12"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border;
+G2L["12"]["Thickness"] = 3;
+G2L["12"]["Color"] = Color3.fromRGB(109, 109, 109);
+
+-- Coin Farm Script
+local function startCoinFarm()
+    local player = game:GetService("Players").LocalPlayer
+    local FLY_SPEED = 26 -- Updated speed of movement
+    local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
+    local visitedCoins = {}
+
+    -- Function to initialize the character
+    local function initializeCharacter(character)
+        local hrp = character:WaitForChild("HumanoidRootPart")
+
+        -- Enable noclip for the character
+        game:GetService("RunService").Stepped:Connect(function()
+            for _, part in ipairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
             end
-        end
-    end)
+        end)
 
-    -- Create a BodyVelocity object for smooth movement
-    local bodyVelocity = Instance.new("BodyVelocity")
-    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    bodyVelocity.Velocity = Vector3.zero
-    bodyVelocity.Parent = hrp
-
-    -- Function to move the character to a target position
-    local function forceMoveTo(targetPos)
-        local startTime = tick()
-
-        while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-            if tick() - startTime > 10 then -- Timeout after 10 seconds
-                bodyVelocity.Velocity = Vector3.zero
-                return false
-            end
-
-            -- Calculate direction and set velocity
-            local direction = (targetPos - hrp.Position).Unit
-            bodyVelocity.Velocity = direction * FLY_SPEED
-            task.wait()
-        end
-
+        -- Create a BodyVelocity object for smooth movement
+        local bodyVelocity = Instance.new("BodyVelocity")
+        bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
         bodyVelocity.Velocity = Vector3.zero
-        return true
-    end
+        bodyVelocity.Parent = hrp
 
-    -- Function to get all uncollected coins
-    local function getCoins()
-        local coins = {}
-        for _, coin in ipairs(workspace:GetDescendants()) do
-            if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
-                table.insert(coins, coin)
+        -- Function to move the character to a target position
+        local function forceMoveTo(targetPos)
+            local startTime = tick()
+
+            while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+                if tick() - startTime > 10 then -- Timeout after 10 seconds
+                    bodyVelocity.Velocity = Vector3.zero
+                    return false
+                end
+
+                -- Calculate direction and set velocity
+                local direction = (targetPos - hrp.Position).Unit
+                bodyVelocity.Velocity = direction * FLY_SPEED
+                task.wait()
             end
+
+            bodyVelocity.Velocity = Vector3.zero
+            return true
         end
-        return coins
-    end
 
-    -- Function to find the closest coin
-    local function getClosestCoin()
-        local coins = getCoins()
-        local closestCoin = nil
-        local shortestDistance = math.huge
-
-        for _, coin in ipairs(coins) do
-            local distance = (hrp.Position - coin.Position).Magnitude
-            if distance < shortestDistance then
-                shortestDistance = distance
-                closestCoin = coin
+        -- Function to get all uncollected coins
+        local function getCoins()
+            local coins = {}
+            for _, coin in ipairs(workspace:GetDescendants()) do
+                if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+                    table.insert(coins, coin)
+                end
             end
+            return coins
         end
 
-        return closestCoin
+        -- Function to find the closest coin
+        local function getClosestCoin()
+            local coins = getCoins()
+            local closestCoin = nil
+            local shortestDistance = math.huge
+
+            for _, coin in ipairs(coins) do
+                local distance = (hrp.Position - coin.Position).Magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    closestCoin = coin
+                end
+            end
+
+            return closestCoin
+        end
+
+        -- Main loop to collect coins
+        while true do
+            local coin = getClosestCoin()
+
+            if not coin then
+                -- No coins left, wait and check again
+                task.wait(5)
+                continue
+            end
+
+            -- Move to the coin
+            local targetPos = coin.Position
+            if forceMoveTo(targetPos) then
+                visitedCoins[coin] = true
+                coin:Destroy() -- Destroy the coin locally
+            end
+
+            task.wait(0.1) -- Small delay before checking for the next coin
+        end
     end
 
-    -- Main loop to collect coins
-    while true do
-        local coin = getClosestCoin()
-
-        if not coin then
-            -- No coins left, wait and check again
-            task.wait(5)
-            continue
-        end
-
-        -- Move to the coin
-        local targetPos = coin.Position
-        if forceMoveTo(targetPos) then
-            visitedCoins[coin] = true
-            coin:Destroy() -- Destroy the coin locally
-        end
-
-        task.wait(0.1) -- Small delay before checking for the next coin
+    -- Handle character initialization and respawning
+    local function onCharacterAdded(character)
+        initializeCharacter(character)
     end
-end
 
--- Handle character initialization and respawning
-local function onCharacterAdded(character)
-    initializeCharacter(character)
-end
+    -- Connect the character added event
+    player.CharacterAdded:Connect(onCharacterAdded)
 
--- Connect the character added event
-player.CharacterAdded:Connect(onCharacterAdded)
-
--- Initialize the current character if it already exists
-if player.Character then
-    onCharacterAdded(player.Character)
-end
-
--- Button click event to trigger the Coin Farm
-G2L["a"].MouseButton1Click:Connect(function()
-    -- Start the coin farm script when the button is clicked
-    print("Coin Farm Started!")
-    -- Call the character initialization logic to start coin collecting
+    -- Initialize the current character if it already exists
     if player.Character then
-        initializeCharacter(player.Character)
+        onCharacterAdded(player.Character)
     end
-end)
+end
+
+-- Connect the Coin Farm button to start the script
+G2L["a"].MouseButton1Click:Connect(startCoinFarm)
 
 return G2L["1"], require;
