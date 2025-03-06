@@ -1,90 +1,105 @@
 local player = game:GetService("Players").LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local hrp = character:WaitForChild("HumanoidRootPart")
-
--- Enable noclip for the character
-game:GetService("RunService").Stepped:Connect(function()
-    for _, part in ipairs(character:GetDescendants()) do
-        if part:IsA("BasePart") then
-            part.CanCollide = false
-        end
-    end
-end)
-
-local FLY_SPEED = 26 -- Speed of movement
+local FLY_SPEED = 50 -- Speed of movement
 local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
 local visitedCoins = {}
 
--- Create a BodyVelocity object for smooth movement
-local bodyVelocity = Instance.new("BodyVelocity")
-bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-bodyVelocity.Velocity = Vector3.zero
-bodyVelocity.Parent = hrp
+-- Function to initialize the character
+local function initializeCharacter(character)
+    local hrp = character:WaitForChild("HumanoidRootPart")
 
--- Function to move the character to a target position
-local function forceMoveTo(targetPos)
-    local startTime = tick()
-
-    while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-        if tick() - startTime > 10 then -- Timeout after 10 seconds
-            bodyVelocity.Velocity = Vector3.zero
-            return false
+    -- Enable noclip for the character
+    game:GetService("RunService").Stepped:Connect(function()
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
         end
+    end)
 
-        -- Calculate direction and set velocity
-        local direction = (targetPos - hrp.Position).Unit
-        bodyVelocity.Velocity = direction * FLY_SPEED
-        task.wait()
-    end
-
+    -- Create a BodyVelocity object for smooth movement
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     bodyVelocity.Velocity = Vector3.zero
-    return true
-end
+    bodyVelocity.Parent = hrp
 
--- Function to get all uncollected coins
-local function getCoins()
-    local coins = {}
-    for _, coin in ipairs(workspace:GetDescendants()) do
-        if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
-            table.insert(coins, coin)
+    -- Function to move the character to a target position
+    local function forceMoveTo(targetPos)
+        local startTime = tick()
+
+        while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+            if tick() - startTime > 10 then -- Timeout after 10 seconds
+                bodyVelocity.Velocity = Vector3.zero
+                return false
+            end
+
+            -- Calculate direction and set velocity
+            local direction = (targetPos - hrp.Position).Unit
+            bodyVelocity.Velocity = direction * FLY_SPEED
+            task.wait()
         end
+
+        bodyVelocity.Velocity = Vector3.zero
+        return true
     end
-    return coins
-end
 
--- Function to find the closest coin
-local function getClosestCoin()
-    local coins = getCoins()
-    local closestCoin = nil
-    local shortestDistance = math.huge
-
-    for _, coin in ipairs(coins) do
-        local distance = (hrp.Position - coin.Position).Magnitude
-        if distance < shortestDistance then
-            shortestDistance = distance
-            closestCoin = coin
+    -- Function to get all uncollected coins
+    local function getCoins()
+        local coins = {}
+        for _, coin in ipairs(workspace:GetDescendants()) do
+            if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+                table.insert(coins, coin)
+            end
         end
+        return coins
     end
 
-    return closestCoin
+    -- Function to find the closest coin
+    local function getClosestCoin()
+        local coins = getCoins()
+        local closestCoin = nil
+        local shortestDistance = math.huge
+
+        for _, coin in ipairs(coins) do
+            local distance = (hrp.Position - coin.Position).Magnitude
+            if distance < shortestDistance then
+                shortestDistance = distance
+                closestCoin = coin
+            end
+        end
+
+        return closestCoin
+    end
+
+    -- Main loop to collect coins
+    while true do
+        local coin = getClosestCoin()
+
+        if not coin then
+            -- No coins left, wait and check again
+            task.wait(5)
+            continue
+        end
+
+        -- Move to the coin
+        local targetPos = coin.Position
+        if forceMoveTo(targetPos) then
+            visitedCoins[coin] = true
+            coin:Destroy() -- Destroy the coin locally
+        end
+
+        task.wait(0.1) -- Small delay before checking for the next coin
+    end
 end
 
--- Main loop to collect coins
-while true do
-    local coin = getClosestCoin()
+-- Handle character initialization and respawning
+local function onCharacterAdded(character)
+    initializeCharacter(character)
+end
 
-    if not coin then
-        -- No coins left, wait and check again
-        task.wait(5)
-        continue
-    end
+-- Connect the character added event
+player.CharacterAdded:Connect(onCharacterAdded)
 
-    -- Move to the coin
-    local targetPos = coin.Position
-    if forceMoveTo(targetPos) then
-        visitedCoins[coin] = true
-        coin:Destroy() -- Destroy the coin locally
-    end
-
-    task.wait(0.1) -- Small delay before checking for the next coin
+-- Initialize the current character if it already exists
+if player.Character then
+    onCharacterAdded(player.Character)
 end
