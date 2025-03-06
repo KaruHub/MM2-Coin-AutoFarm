@@ -1,4 +1,7 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source")))
+-- Load the Rayfield library
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Initialize variables
 local player = game:GetService("Players").LocalPlayer
 local FLY_SPEED = 26
 local ARRIVAL_THRESHOLD = 1
@@ -71,11 +74,23 @@ local function startFarming()
 end
 
 -- GUI
-local Window = OrionLib:MakeWindow({Name = "Coin Farm", HidePremium = false, SaveConfig = false})
-local Tab = Window:MakeTab({Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
-Tab:AddToggle({
+local Window = Rayfield:CreateWindow({
     Name = "Coin Farm",
-    Default = false,
+    LoadingTitle = "Rayfield Interface Suite",
+    LoadingSubtitle = "by Sirius",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil, -- Create a custom folder for your hub/game
+        FileName = "CoinFarmConfig"
+    }
+})
+
+local Tab = Window:CreateTab("Main", 4483362458) -- Title, Image
+
+Tab:CreateToggle({
+    Name = "Coin Farm",
+    CurrentValue = false,
+    Flag = "CoinFarmToggle", -- A flag is the identifier for the configuration file
     Callback = function(state)
         farming = state
         if farming then
@@ -90,4 +105,5 @@ if player.Character then
     initializeCharacter(player.Character)
 end
 
-OrionLib:Init()
+-- Load the configuration
+Rayfield:LoadConfiguration()
