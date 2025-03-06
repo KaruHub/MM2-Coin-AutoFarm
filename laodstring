@@ -1,5 +1,5 @@
 -- Load Orion Library
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
 
 -- Variables
 local player = game:GetService("Players").LocalPlayer
@@ -105,8 +105,19 @@ local function startFarming()
 end
 
 -- GUI
-local Window = OrionLib:MakeWindow({Name = "Coin Farm", HidePremium = false, SaveConfig = false})
-local Tab = Window:MakeTab({Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false})
+local Window = OrionLib:MakeWindow({
+    Name = "Coin Farm",
+    HidePremium = false,
+    SaveConfig = false,
+    ConfigFolder = "Orion_CoinFarm"
+})
+
+local Tab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
 Tab:AddToggle({
     Name = "Coin Farm",
     Default = false,
@@ -119,9 +130,4 @@ Tab:AddToggle({
 })
 
 -- Handle character initialization
-player.CharacterAdded:Connect(initializeCharacter)
-if player.Character then
-    initializeCharacter(player.Character)
-end
-
-OrionLib:Init()
+player.CharacterAdded:Connect(initialize
