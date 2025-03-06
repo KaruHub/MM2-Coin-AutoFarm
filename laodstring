@@ -147,3 +147,5 @@ farmCheckbox.MouseButton1Click:Connect(function()
         farmCheckbox.Text = "Enable Coin Farm"
     end
 end)
+
+-- The script will not start farming immediately; the checkbox must be clicked first.
