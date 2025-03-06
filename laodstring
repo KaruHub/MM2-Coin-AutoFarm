@@ -7,14 +7,19 @@ game:GetService("RunService").Stepped:Connect(function()
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
             part.CanCollide = false
-            part.Velocity = Vector3.zero
         end
     end
 end)
 
-local FLY_SPEED = 50 -- Increased speed for smoother movement
-local ARRIVAL_THRESHOLD = 1
+local FLY_SPEED = 50 -- Speed of movement
+local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
 local visitedCoins = {}
+
+-- Create a BodyVelocity object for smooth movement
+local bodyVelocity = Instance.new("BodyVelocity")
+bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+bodyVelocity.Velocity = Vector3.zero
+bodyVelocity.Parent = hrp
 
 -- Function to move the character to a target position
 local function forceMoveTo(targetPos)
@@ -22,17 +27,17 @@ local function forceMoveTo(targetPos)
 
     while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
         if tick() - startTime > 10 then -- Timeout after 10 seconds
-            hrp.Velocity = Vector3.zero
+            bodyVelocity.Velocity = Vector3.zero
             return false
         end
 
-        -- Calculate direction and move
+        -- Calculate direction and set velocity
         local direction = (targetPos - hrp.Position).Unit
-        hrp.Velocity = direction * FLY_SPEED
+        bodyVelocity.Velocity = direction * FLY_SPEED
         task.wait()
     end
 
-    hrp.Velocity = Vector3.zero
+    bodyVelocity.Velocity = Vector3.zero
     return true
 end
 
