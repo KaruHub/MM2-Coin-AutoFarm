@@ -1,4 +1,4 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/jensonhirst/Orion/main/source")))()
 local player = game:GetService("Players").LocalPlayer
 local FLY_SPEED = 26
 local ARRIVAL_THRESHOLD = 1
@@ -13,64 +13,61 @@ local function initializeCharacter(character)
     bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     bodyVelocity.Velocity = Vector3.zero
     bodyVelocity.Parent = hrp
+end
 
-    -- Function to move the character to a target position
-    local function forceMoveTo(targetPos)
-        local startTime = tick()
-        while farming and (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-            if tick() - startTime > 10 then
-                bodyVelocity.Velocity = Vector3.zero
-                return false
-            end
-            local direction = (targetPos - hrp.Position).Unit
-            bodyVelocity.Velocity = direction * FLY_SPEED
-            task.wait()
+-- Function to move the character to a target position
+local function forceMoveTo(targetPos)
+    local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return false end
+    local startTime = tick()
+    while farming and (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+        if tick() - startTime > 10 then
+            bodyVelocity.Velocity = Vector3.zero
+            return false
         end
-        bodyVelocity.Velocity = Vector3.zero
-        return true
+        local direction = (targetPos - hrp.Position).Unit
+        bodyVelocity.Velocity = direction * FLY_SPEED
+        task.wait()
     end
+    bodyVelocity.Velocity = Vector3.zero
+    return true
+end
 
-    -- Function to get uncollected coins
-    local function getCoins()
-        local coins = {}
-        for _, coin in ipairs(workspace:GetDescendants()) do
-            if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
-                table.insert(coins, coin)
-            end
+-- Function to get uncollected coins
+local function getCoins()
+    local coins = {}
+    for _, coin in ipairs(workspace:GetDescendants()) do
+        if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
+            table.insert(coins, coin)
         end
-        return coins
     end
+    return coins
+end
 
-    -- Function to find the closest coin
-    local function getClosestCoin()
-        local coins = getCoins()
-        local closestCoin, shortestDistance = nil, math.huge
-        for _, coin in ipairs(coins) do
-            local distance = (hrp.Position - coin.Position).Magnitude
-            if distance < shortestDistance then
-                shortestDistance, closestCoin = distance, coin
-            end
+-- Function to find the closest coin
+local function getClosestCoin()
+    local coins = getCoins()
+    local closestCoin, shortestDistance = nil, math.huge
+    for _, coin in ipairs(coins) do
+        local distance = (player.Character.HumanoidRootPart.Position - coin.Position).Magnitude
+        if distance < shortestDistance then
+            shortestDistance, closestCoin = distance, coin
         end
-        return closestCoin
     end
+    return closestCoin
+end
 
-    -- Coin farming loop
-    task.spawn(function()
-        while true do
-            if farming then
-                local coin = getClosestCoin()
-                if not coin then task.wait(5) continue end
-                if forceMoveTo(coin.Position) then
-                    visitedCoins[coin] = true
-                    coin:Destroy()
-                end
-                task.wait(0.1)
-            else
-                bodyVelocity.Velocity = Vector3.zero
-                task.wait(1)
-            end
+-- Coin farming loop
+local function startFarming()
+    while farming do
+        local coin = getClosestCoin()
+        if not coin then task.wait(5) continue end
+        if forceMoveTo(coin.Position) then
+            visitedCoins[coin] = true
+            coin:Destroy()
         end
-    end)
+        task.wait(0.1)
+    end
 end
 
 -- GUI
@@ -81,16 +78,16 @@ Tab:AddToggle({
     Default = false,
     Callback = function(state)
         farming = state
+        if farming then
+            startFarming()
+        end
     end
 })
 
 -- Handle character initialization
-local function onCharacterAdded(character)
-    initializeCharacter(character)
-end
-player.CharacterAdded:Connect(onCharacterAdded)
+player.CharacterAdded:Connect(initializeCharacter)
 if player.Character then
-    onCharacterAdded(player.Character)
+    initializeCharacter(player.Character)
 end
 
 OrionLib:Init()
