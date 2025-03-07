@@ -500,7 +500,6 @@ local function initializeCharacter(character)
 
     -- Main loop to collect coins - Using a separate function for clean restarts
     local collectingCoins = false
-    local coinCounter = 0 -- Add a counter for coins collected in the current batch
     
     local function startCoinCollection()
         if collectingCoins then return end
@@ -514,21 +513,6 @@ local function initializeCharacter(character)
                     break
                 end
                 
-                -- Check if we've reached 40 coins
-                if coinCounter >= 40 then
-                    -- Print "BagC" twice with a 2-second delay
-                    print("BagC")
-                    task.wait(2)
-                    print("BagC")
-                    
-                    -- Reset the counter
-                    coinCounter = 0
-                    
-                    -- Pause briefly after resetting
-                    coinStatus.Text = "Bag full! Resetting..."
-                    task.wait(1)
-                end
-                
                 local coin = getClosestCoin()
 
                 if not coin then
@@ -539,13 +523,12 @@ local function initializeCharacter(character)
                 end
 
                 -- Move to the coin
-                coinStatus.Text = "Moving to coin... (" .. coinCounter .. "/40)"
+                coinStatus.Text = "Moving to coin..."
                 local targetPos = coin.Position
                 if forceMoveTo(targetPos) then
                     visitedCoins[coin] = true
                     coinsCollected = coinsCollected + 1
-                    coinCounter = coinCounter + 1 -- Increment the batch counter
-                    coinStatus.Text = "Coin collected: " .. coinsCollected .. " (" .. coinCounter .. "/40)"
+                    coinStatus.Text = "Coin collected: " .. coinsCollected
                     updateStats()
                     coin:Destroy() -- Destroy the coin locally
                 end
@@ -569,3 +552,75 @@ local function initializeCharacter(character)
         end
     end
 end
+
+-- Setup Anti-AFK mechanism
+local lastInputTime = tick()
+local function simulateInput()
+    -- Simulate a mouse movement to prevent AFK kick
+    local position = UserInputService:GetMouseLocation()
+    UserInputService:MoveMouse(position + Vector2.new(1, 0))
+    task.wait(0.1)
+    UserInputService:MoveMouse(position)
+    
+    -- Update last input time
+    lastInputTime = tick()
+    
+    -- Update status
+    antiAfkStatus.Text = "Active - Last click: " .. math.floor(tick() - lastInputTime) .. "s ago"
+end
+
+-- Start the Anti-AFK timer
+task.spawn(function()
+    while true do
+        if tick() - lastInputTime >= ANTI_AFK_INTERVAL then
+            simulateInput()
+        end
+        antiAfkStatus.Text = "Active - Next click: " .. math.floor(ANTI_AFK_INTERVAL - (tick() - lastInputTime)) .. "s"
+        task.wait(1)
+    end
+end)
+
+-- Update stats periodically
+task.spawn(function()
+    while true do
+        updateStats()
+        task.wait(1)
+    end
+end)
+
+-- Track current cleanup function
+local currentCleanupFunction = nil
+
+-- Handle character initialization and respawning
+local function onCharacterAdded(character)
+    -- Clean up previous character if needed
+    if currentCleanupFunction then
+        currentCleanupFunction()
+    end
+    
+    -- Initialize the new character
+    currentCleanupFunction = initializeCharacter(character)
+    
+    -- Make sure GUI buttons are properly connected
+    setupMinimizeButtons()
+end
+
+-- Connect the character added event
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Initialize the current character if it already exists
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+
+-- Handle player removal (for clean shutdown)
+player.AncestryChanged:Connect(function(_, parent)
+    if parent == nil then
+        if currentCleanupFunction then
+            currentCleanupFunction()
+        end
+    end
+end)
+
+-- Return references to the GUIs
+return mainGui, antiAfkGui, minimizedGui
