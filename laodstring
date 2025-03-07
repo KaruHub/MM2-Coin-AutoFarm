@@ -1,8 +1,10 @@
 local G2L = {}
 local coinFarmActive = false
 local afkEnabled = false
+local coinCount = 0
+local bodyVelocity = nil
 local noclipConnection = nil
-local movementConnection = nil
+local movementLoop = nil
 local minimized = false
 
 -- ========== PERSISTENT GUI SETUP ========== --
