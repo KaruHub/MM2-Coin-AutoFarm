@@ -14,15 +14,17 @@ local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
 
 -- Configuration
-local FLY_SPEED = 26 -- Speed of movement
+local FLY_SPEED = 24 -- Changed from 26 to 24 as requested
 local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
 local ANTI_AFK_INTERVAL = 5 -- Anti-AFK click interval in seconds
 local visitedCoins = {}
 local startTime = tick()
 local coinsCollected = 0
 local isMinimized = false
+local bagCount = 0 -- New counter for the bag full feature
 
 -- Check if GUIs already exist and remove them
 local function removeExistingGuis()
@@ -160,6 +162,34 @@ coinStatusStroke.Thickness = 3
 coinStatusStroke.Color = Color3.fromRGB(255, 255, 0)
 coinStatusStroke.Parent = coinStatus
 
+-- Create Bag Counter Label (new)
+local bagCounterLabel = Instance.new("TextLabel")
+bagCounterLabel.TextWrapped = true
+bagCounterLabel.BorderSizePixel = 0
+bagCounterLabel.TextSize = 14
+bagCounterLabel.TextScaled = true
+bagCounterLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+bagCounterLabel.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+bagCounterLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+bagCounterLabel.RichText = true
+bagCounterLabel.Size = UDim2.new(0, 225, 0, 49)
+bagCounterLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+bagCounterLabel.Text = "Bag: 0/40"
+bagCounterLabel.Name = "BagCounter"
+bagCounterLabel.Position = UDim2.new(0.09219, 0, 0.36521, 0)
+bagCounterLabel.Parent = mainFrame
+
+-- Add UICorner to Bag Counter
+local bagCounterCorner = Instance.new("UICorner")
+bagCounterCorner.Parent = bagCounterLabel
+
+-- Add UIStroke to Bag Counter
+local bagCounterStroke = Instance.new("UIStroke")
+bagCounterStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+bagCounterStroke.Thickness = 3
+bagCounterStroke.Color = Color3.fromRGB(255, 255, 0)
+bagCounterStroke.Parent = bagCounterLabel
+
 -- Create Fling Status
 local flingStatus = Instance.new("TextLabel")
 flingStatus.TextWrapped = true
@@ -174,7 +204,7 @@ flingStatus.Size = UDim2.new(0, 225, 0, 49)
 flingStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
 flingStatus.Text = "Flinging All when bag full"
 flingStatus.Name = "Fling"
-flingStatus.Position = UDim2.new(0.09219, 0, 0.36521, 0)
+flingStatus.Position = UDim2.new(0.09219, 0, 0.50367, 0) -- Adjusted position
 flingStatus.Parent = mainFrame
 
 -- Add UICorner to Fling Status
@@ -202,7 +232,7 @@ kickStatus.Size = UDim2.new(0, 225, 0, 49)
 kickStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
 kickStatus.Text = "Anti-Kick ON"
 kickStatus.Name = "Kick"
-kickStatus.Position = UDim2.new(0.10536, 0, 0.55367, 0)
+kickStatus.Position = UDim2.new(0.10536, 0, 0.63367, 0) -- Adjusted position
 kickStatus.Parent = mainFrame
 
 -- Add UICorner to Kick Status
@@ -374,6 +404,48 @@ minimizedButtonStroke.Thickness = 3
 minimizedButtonStroke.Color = Color3.fromRGB(255, 255, 0)
 minimizedButtonStroke.Parent = minimizedButton
 
+-- Make the GUIs draggable
+local function makeDraggable(gui, draggingElement)
+    local dragging = false
+    local dragInput, dragStart, startPos
+    
+    local function update(input)
+        local delta = input.Position - dragStart
+        gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+    
+    draggingElement.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = gui.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
+        end
+    end)
+    
+    draggingElement.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            update(input)
+        end
+    end)
+end
+
+-- Make the GUIs draggable
+makeDraggable(mainFrame, mainTitle)
+makeDraggable(antiAfkFrame, antiAfkTitle)
+makeDraggable(minimizedButton, minimizedButton)
+
 -- Function to update time and coins per hour display
 local function updateStats()
     local elapsedTime = tick() - startTime
@@ -385,12 +457,63 @@ local function updateStats()
     end
 end
 
--- Function to toggle minimized state
+-- Animation functions
+local function createOpenAnimation(gui)
+    local originalSize = gui.Size
+    local originalPosition = gui.Position
+    
+    gui.Size = UDim2.new(0, 0, 0, 0)
+    gui.Position = UDim2.new(originalPosition.X.Scale + 0.5, originalPosition.X.Offset, originalPosition.Y.Scale + 0.5, originalPosition.Y.Offset)
+    
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out)
+    local tweenSize = TweenService:Create(gui, tweenInfo, {Size = originalSize})
+    local tweenPosition = TweenService:Create(gui, tweenInfo, {Position = originalPosition})
+    
+    tweenSize:Play()
+    tweenPosition:Play()
+end
+
+local function createCloseAnimation(gui, callback)
+    local originalSize = gui.Size
+    local originalPosition = gui.Position
+    local targetPosition = UDim2.new(originalPosition.X.Scale + 0.5, originalPosition.X.Offset, originalPosition.Y.Scale + 0.5, originalPosition.Y.Offset)
+    
+    local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In)
+    local tweenSize = TweenService:Create(gui, tweenInfo, {Size = UDim2.new(0, 0, 0, 0)})
+    local tweenPosition = TweenService:Create(gui, tweenInfo, {Position = targetPosition})
+    
+    tweenSize:Play()
+    tweenPosition:Play()
+    
+    tweenSize.Completed:Connect(function()
+        if callback then
+            callback()
+        end
+    end)
+end
+
+-- Function to toggle minimized state with animation
 local function toggleMinimize()
+    if isMinimized then
+        -- Show main GUI with animation
+        minimizedGui.Enabled = false
+        mainGui.Enabled = true
+        antiAfkGui.Enabled = true
+        createOpenAnimation(mainFrame)
+        createOpenAnimation(antiAfkFrame)
+    else
+        -- Minimize with animation
+        createCloseAnimation(mainFrame, function()
+            mainGui.Enabled = false
+            createCloseAnimation(antiAfkFrame, function()
+                antiAfkGui.Enabled = false
+                minimizedGui.Enabled = true
+                createOpenAnimation(minimizedButton)
+            end)
+        end)
+    end
+    
     isMinimized = not isMinimized
-    mainGui.Enabled = not isMinimized
-    antiAfkGui.Enabled = not isMinimized
-    minimizedGui.Enabled = isMinimized
 end
 
 -- Connect the minimize button with proper error handling
@@ -445,182 +568,21 @@ local function initializeCharacter(character)
     bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     bodyVelocity.Velocity = Vector3.zero
     bodyVelocity.Parent = hrp
-
-    -- Function to move the character to a target position
-    local function forceMoveTo(targetPos)
-        local moveStartTime = tick()
-
-        while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-            if not hrp or not hrp.Parent or humanoid.Health <= 0 then
-                return false -- Character died or was removed
-            end
-            
-            if tick() - moveStartTime > 10 then -- Timeout after 10 seconds
-                bodyVelocity.Velocity = Vector3.zero
-                return false
-            end
-
-            -- Calculate direction and set velocity
-            local direction = (targetPos - hrp.Position).Unit
-            bodyVelocity.Velocity = direction * FLY_SPEED
-            task.wait()
-        end
-
-        bodyVelocity.Velocity = Vector3.zero
-        return true
-    end
-
-    -- Function to get all uncollected coins
-    local function getCoins()
-        local coins = {}
-        for _, coin in ipairs(workspace:GetDescendants()) do
-            if coin:IsA("MeshPart") and coin.Name == "MainCoin" and not visitedCoins[coin] then
-                table.insert(coins, coin)
-            end
-        end
-        return coins
-    end
-
-    -- Function to find the closest coin
-    local function getClosestCoin()
-        local coins = getCoins()
-        local closestCoin = nil
-        local shortestDistance = math.huge
-
-        for _, coin in ipairs(coins) do
-            local distance = (hrp.Position - coin.Position).Magnitude
-            if distance < shortestDistance then
-                shortestDistance = distance
-                closestCoin = coin
-            end
-        end
-
-        return closestCoin
-    end
-
-    -- Main loop to collect coins - Using a separate function for clean restarts
-    local collectingCoins = false
     
-    local function startCoinCollection()
-        if collectingCoins then return end
-        collectingCoins = true
+    -- Make everything else invisible except coins
+    local function updateVisibility()
+        -- Make character transparent
+        for _, part in ipairs(character:GetDescendants()) do
+            if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+                part.Transparency = 0.8
+            end
+        end
         
-        task.spawn(function()
-            while collectingCoins do
-                -- Check if character is still alive
-                if not hrp or not hrp.Parent or humanoid.Health <= 0 then
-                    collectingCoins = false
-                    break
-                end
-                
-                local coin = getClosestCoin()
-
-                if not coin then
-                    -- No coins left, wait and check again
-                    coinStatus.Text = "No coins found, waiting..."
-                    task.wait(5)
-                    continue
-                end
-
-                -- Move to the coin
-                coinStatus.Text = "Moving to coin..."
-                local targetPos = coin.Position
-                if forceMoveTo(targetPos) then
-                    visitedCoins[coin] = true
-                    coinsCollected = coinsCollected + 1
-                    coinStatus.Text = "Coin collected: " .. coinsCollected
-                    updateStats()
-                    coin:Destroy() -- Destroy the coin locally
-                end
-
-                task.wait(0.1) -- Small delay before checking for the next coin
-            end
-        end)
-    end
-    
-    -- Start collecting coins
-    startCoinCollection()
-    
-    -- Return a cleanup function
-    return function()
-        collectingCoins = false
-        if bodyVelocity and bodyVelocity.Parent then
-            bodyVelocity:Destroy()
-        end
-        if noclipConnection then
-            noclipConnection:Disconnect()
-        end
-    end
-end
-
--- Setup Anti-AFK mechanism
-local lastInputTime = tick()
-local function simulateInput()
-    -- Simulate a mouse movement to prevent AFK kick
-    local position = UserInputService:GetMouseLocation()
-    UserInputService:MoveMouse(position + Vector2.new(1, 0))
-    task.wait(0.1)
-    UserInputService:MoveMouse(position)
-    
-    -- Update last input time
-    lastInputTime = tick()
-    
-    -- Update status
-    antiAfkStatus.Text = "Active - Last click: " .. math.floor(tick() - lastInputTime) .. "s ago"
-end
-
--- Start the Anti-AFK timer
-task.spawn(function()
-    while true do
-        if tick() - lastInputTime >= ANTI_AFK_INTERVAL then
-            simulateInput()
-        end
-        antiAfkStatus.Text = "Active - Next click: " .. math.floor(ANTI_AFK_INTERVAL - (tick() - lastInputTime)) .. "s"
-        task.wait(1)
-    end
-end)
-
--- Update stats periodically
-task.spawn(function()
-    while true do
-        updateStats()
-        task.wait(1)
-    end
-end)
-
--- Track current cleanup function
-local currentCleanupFunction = nil
-
--- Handle character initialization and respawning
-local function onCharacterAdded(character)
-    -- Clean up previous character if needed
-    if currentCleanupFunction then
-        currentCleanupFunction()
-    end
-    
-    -- Initialize the new character
-    currentCleanupFunction = initializeCharacter(character)
-    
-    -- Make sure GUI buttons are properly connected
-    setupMinimizeButtons()
-end
-
--- Connect the character added event
-player.CharacterAdded:Connect(onCharacterAdded)
-
--- Initialize the current character if it already exists
-if player.Character then
-    onCharacterAdded(player.Character)
-end
-
--- Handle player removal (for clean shutdown)
-player.AncestryChanged:Connect(function(_, parent)
-    if parent == nil then
-        if currentCleanupFunction then
-            currentCleanupFunction()
-        end
-    end
-end)
-
--- Return references to the GUIs
-return mainGui, antiAfkGui, minimizedGui
+        -- Make other objects transparent
+        for _, obj in ipairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and not obj:IsDescendantOf(character) then
+                if obj.Name == "MainCoin" then
+                    -- Highlight coins
+                    if not obj:FindFirstChild("Highlight") then
+                        local highlight = Instance.new("Highlight")
+                        highlight.
