@@ -80,6 +80,7 @@ titleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
 titleLabel.Size = UDim2.new(0, 200, 0, 50)
 titleLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 titleLabel.Text = "Critic MM2 AutoFarm🍋"
+titleLabel.Position = UDim2.new(0.05515, 0, 0.01279, 0)
 
 local titleCorner = Instance.new("UICorner", titleLabel)
 local titleStroke = Instance.new("UIStroke", titleLabel)
@@ -109,16 +110,24 @@ minimizeStroke.Thickness = 3
 minimizeStroke.Color = Color3.fromRGB(109, 109, 109)
 
 -- Minimize Button Functionality
-minimizeButton.MouseButton1Click:Connect(function()
+local elementsToHide = {}
+
+local function toggleMinimize()
     minimized = not minimized
     if minimized then
-        mainFrame.Size = UDim2.new(0, 272, 0, 50)
+        for _, element in ipairs(elementsToHide) do
+            element.Visible = false
+        end
         minimizeButton.Text = "Maximize"
     else
-        mainFrame.Size = UDim2.new(0, 272, 0, 383)
+        for _, element in ipairs(elementsToHide) do
+            element.Visible = true
+        end
         minimizeButton.Text = "Minimize"
     end
-end)
+end
+
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
 
 -- Background Image
 local backgroundImage = Instance.new("ImageLabel", mainFrame)
@@ -129,6 +138,7 @@ backgroundImage.Size = UDim2.new(0, 245, 0, 297)
 backgroundImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
 backgroundImage.Name = "Backround"
 backgroundImage.Position = UDim2.new(0.028, 0, 0.18413, 0)
+table.insert(elementsToHide, backgroundImage)
 
 -- Coin Farm Button
 local coinButton = Instance.new("TextButton", mainFrame)
@@ -145,6 +155,7 @@ coinButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 coinButton.Text = "Coin Farm"
 coinButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
 coinButton.Position = UDim2.new(0.02768, 0, 0.19622, 0)
+table.insert(elementsToHide, coinButton)
 
 local coinCorner = Instance.new("UICorner", coinButton)
 
@@ -163,6 +174,7 @@ killButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 killButton.Text = "Fling all when bag full"
 killButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
 killButton.Position = UDim2.new(0.02906, 0, 0.37118, 0)
+table.insert(elementsToHide, killButton)
 
 local killCorner = Instance.new("UICorner", killButton)
 
@@ -181,6 +193,7 @@ afkButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 afkButton.Text = "Anti - AFK"
 afkButton.Style = Enum.ButtonStyle.RobloxRoundDefaultButton
 afkButton.Position = UDim2.new(0.02735, 0, 0.54366, 0)
+table.insert(elementsToHide, afkButton)
 
 local afkCorner = Instance.new("UICorner", afkButton)
 
@@ -197,6 +210,7 @@ infoLabel.Size = UDim2.new(0, 200, 0, 50)
 infoLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 infoLabel.Text = "Took me a long time to make this, also i made this gui becasue my main ui didnt work for some reasons."
 infoLabel.Position = UDim2.new(0.05515, 0, 0.71279, 0)
+table.insert(elementsToHide, infoLabel)
 
 local infoCorner = Instance.new("UICorner", infoLabel)
 local infoStroke = Instance.new("UIStroke", infoLabel)
