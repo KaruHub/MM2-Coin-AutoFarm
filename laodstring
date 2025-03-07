@@ -7,11 +7,13 @@
  Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
 ]=]
 
--- Combined MM2 AutoFarm Script with Anti-AFK
+-- Combined MM2 AutoFarm Script with Anti-AFK and Persistent GUI
 
+-- Services
 local player = game:GetService("Players").LocalPlayer
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
 
 -- Configuration
 local FLY_SPEED = 26 -- Speed of movement
@@ -22,11 +24,38 @@ local startTime = tick()
 local coinsCollected = 0
 local isMinimized = false
 
--- Create Main GUI
+-- Check if GUIs already exist and remove them
+local function removeExistingGuis()
+    -- Look in PlayerGui
+    if player:FindFirstChild("PlayerGui") then
+        if player.PlayerGui:FindFirstChild("MM2AutoFarmGUI") then
+            player.PlayerGui.MM2AutoFarmGUI:Destroy()
+        end
+        if player.PlayerGui:FindFirstChild("AntiAFKGui") then
+            player.PlayerGui.AntiAFKGui:Destroy()
+        end
+        if player.PlayerGui:FindFirstChild("MinimizedGUI") then
+            player.PlayerGui.MinimizedGUI:Destroy()
+        end
+    end
+    
+    -- Look in CoreGui for persistent GUIs
+    for _, gui in pairs(CoreGui:GetChildren()) do
+        if gui.Name == "MM2AutoFarmGUI" or gui.Name == "AntiAFKGui" or gui.Name == "MinimizedGUI" then
+            gui:Destroy()
+        end
+    end
+end
+
+-- Remove any existing GUIs first
+removeExistingGuis()
+
+-- Create Main GUI - Using CoreGui for persistence
 local mainGui = Instance.new("ScreenGui")
 mainGui.Name = "MM2AutoFarmGUI"
 mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-mainGui.Parent = player:WaitForChild("PlayerGui")
+mainGui.ResetOnSpawn = false -- Important for persistence
+mainGui.Parent = CoreGui -- Using CoreGui instead of PlayerGui for persistence
 
 -- Create Main Frame
 local mainFrame = Instance.new("Frame")
@@ -77,7 +106,7 @@ minimizeButton.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json"
 minimizeButton.Size = UDim2.new(0, 49, 0, 49)
 minimizeButton.Name = "Minimize"
 minimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
-minimizeButton.Text = "Minmize"
+minimizeButton.Text = "Minimize"
 minimizeButton.Position = UDim2.new(0.81741, 0, -0.00224, 0)
 minimizeButton.Parent = mainFrame
 
@@ -248,11 +277,12 @@ coinsPerHourLabel.Name = "h"
 coinsPerHourLabel.Position = UDim2.new(0.56229, 0, 0.7317, 0)
 coinsPerHourLabel.Parent = mainFrame
 
--- Create Anti-AFK GUI
+-- Create Anti-AFK GUI - Using CoreGui for persistence
 local antiAfkGui = Instance.new("ScreenGui")
 antiAfkGui.Name = "AntiAFKGui"
 antiAfkGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-antiAfkGui.Parent = player:WaitForChild("PlayerGui")
+antiAfkGui.ResetOnSpawn = false -- Important for persistence
+antiAfkGui.Parent = CoreGui
 
 -- Create Anti-AFK Frame
 local antiAfkFrame = Instance.new("Frame")
@@ -313,12 +343,13 @@ antiAfkFrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 antiAfkFrameStroke.Thickness = 3
 antiAfkFrameStroke.Parent = antiAfkFrame
 
--- Create minimized GUI (initially hidden)
+-- Create minimized GUI - Using CoreGui for persistence
 local minimizedGui = Instance.new("ScreenGui")
 minimizedGui.Name = "MinimizedGUI"
 minimizedGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 minimizedGui.Enabled = false
-minimizedGui.Parent = player:WaitForChild("PlayerGui")
+minimizedGui.ResetOnSpawn = false -- Important for persistence
+minimizedGui.Parent = CoreGui
 
 local minimizedButton = Instance.new("TextButton")
 minimizedButton.TextWrapped = true
@@ -362,17 +393,51 @@ local function toggleMinimize()
     minimizedGui.Enabled = isMinimized
 end
 
+-- Connect the minimize button with proper error handling
+local minimizeButtonConnection = nil
+local minimizedButtonConnection = nil
+
+local function setupMinimizeButtons()
+    -- Disconnect any existing connections to prevent duplicates
+    if minimizeButtonConnection then
+        minimizeButtonConnection:Disconnect()
+    end
+    if minimizedButtonConnection then
+        minimizedButtonConnection:Disconnect()
+    end
+    
+    -- Create new connections
+    minimizeButtonConnection = minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+    minimizedButtonConnection = minimizedButton.MouseButton1Click:Connect(toggleMinimize)
+end
+
+-- Set up the minimize buttons
+setupMinimizeButtons()
+
 -- Function to initialize the character
 local function initializeCharacter(character)
     local hrp = character:WaitForChild("HumanoidRootPart")
+    local humanoid = character:WaitForChild("Humanoid")
+    
+    -- Connect to character death event to ensure GUI stays visible
+    humanoid.Died:Connect(function()
+        coinStatus.Text = "Character died, waiting for respawn..."
+        -- Make sure GUIs are still visible and buttons still work
+        setupMinimizeButtons()
+    end)
 
     -- Enable noclip for the character
-    RunService.Stepped:Connect(function()
+    local noclipConnection = RunService.Stepped:Connect(function()
         for _, part in ipairs(character:GetDescendants()) do
             if part:IsA("BasePart") then
                 part.CanCollide = false
             end
         end
+    end)
+    
+    -- Clean up noclip when character dies
+    humanoid.Died:Connect(function()
+        noclipConnection:Disconnect()
     end)
 
     -- Create a BodyVelocity object for smooth movement
@@ -386,6 +451,10 @@ local function initializeCharacter(character)
         local moveStartTime = tick()
 
         while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
+            if not hrp or not hrp.Parent or humanoid.Health <= 0 then
+                return false -- Character died or was removed
+            end
+            
             if tick() - moveStartTime > 10 then -- Timeout after 10 seconds
                 bodyVelocity.Velocity = Vector3.zero
                 return false
@@ -429,32 +498,59 @@ local function initializeCharacter(character)
         return closestCoin
     end
 
-    -- Main loop to collect coins
-    task.spawn(function()
-        while true do
-            local coin = getClosestCoin()
+    -- Main loop to collect coins - Using a separate function for clean restarts
+    local collectingCoins = false
+    
+    local function startCoinCollection()
+        if collectingCoins then return end
+        collectingCoins = true
+        
+        task.spawn(function()
+            while collectingCoins do
+                -- Check if character is still alive
+                if not hrp or not hrp.Parent or humanoid.Health <= 0 then
+                    collectingCoins = false
+                    break
+                end
+                
+                local coin = getClosestCoin()
 
-            if not coin then
-                -- No coins left, wait and check again
-                coinStatus.Text = "No coins found, waiting..."
-                task.wait(5)
-                continue
+                if not coin then
+                    -- No coins left, wait and check again
+                    coinStatus.Text = "No coins found, waiting..."
+                    task.wait(5)
+                    continue
+                end
+
+                -- Move to the coin
+                coinStatus.Text = "Moving to coin..."
+                local targetPos = coin.Position
+                if forceMoveTo(targetPos) then
+                    visitedCoins[coin] = true
+                    coinsCollected = coinsCollected + 1
+                    coinStatus.Text = "Coin collected: " .. coinsCollected
+                    updateStats()
+                    coin:Destroy() -- Destroy the coin locally
+                end
+
+                task.wait(0.1) -- Small delay before checking for the next coin
             end
-
-            -- Move to the coin
-            coinStatus.Text = "Moving to coin..."
-            local targetPos = coin.Position
-            if forceMoveTo(targetPos) then
-                visitedCoins[coin] = true
-                coinsCollected = coinsCollected + 1
-                coinStatus.Text = "Coin collected: " .. coinsCollected
-                updateStats()
-                coin:Destroy() -- Destroy the coin locally
-            end
-
-            task.wait(0.1) -- Small delay before checking for the next coin
+        end)
+    end
+    
+    -- Start collecting coins
+    startCoinCollection()
+    
+    -- Return a cleanup function
+    return function()
+        collectingCoins = false
+        if bodyVelocity and bodyVelocity.Parent then
+            bodyVelocity:Destroy()
         end
-    end)
+        if noclipConnection then
+            noclipConnection:Disconnect()
+        end
+    end
 end
 
 -- Setup Anti-AFK mechanism
@@ -492,13 +588,21 @@ task.spawn(function()
     end
 end)
 
--- Connect the minimize button
-minimizeButton.MouseButton1Click:Connect(toggleMinimize)
-minimizedButton.MouseButton1Click:Connect(toggleMinimize)
+-- Track current cleanup function
+local currentCleanupFunction = nil
 
 -- Handle character initialization and respawning
 local function onCharacterAdded(character)
-    initializeCharacter(character)
+    -- Clean up previous character if needed
+    if currentCleanupFunction then
+        currentCleanupFunction()
+    end
+    
+    -- Initialize the new character
+    currentCleanupFunction = initializeCharacter(character)
+    
+    -- Make sure GUI buttons are properly connected
+    setupMinimizeButtons()
 end
 
 -- Connect the character added event
@@ -508,6 +612,15 @@ player.CharacterAdded:Connect(onCharacterAdded)
 if player.Character then
     onCharacterAdded(player.Character)
 end
+
+-- Handle player removal (for clean shutdown)
+player.AncestryChanged:Connect(function(_, parent)
+    if parent == nil then
+        if currentCleanupFunction then
+            currentCleanupFunction()
+        end
+    end
+end)
 
 -- Return references to the GUIs
 return mainGui, antiAfkGui, minimizedGui
