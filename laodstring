@@ -576,4 +576,31 @@ local function initializeCharacter(character)
                     -- Highlight coins
                     if not obj:FindFirstChild("Highlight") then
                         local highlight = Instance.new("Highlight")
-                        highlight.
+                        highlight.FillColor = Color3.fromRGB(255, 255, 0)
+                        highlight.OutlineColor = Color3.fromRGB(255, 165, 0)
+                        highlight.FillTransparency = 0.2
+                        highlight.OutlineTransparency = 0
+                        highlight.Parent = obj
+                    end
+                else
+                    -- Make non-coins transparent
+                    obj.Transparency = 0.7
+                end
+            end
+        end
+    end
+    
+    -- Update visibility initially
+    updateVisibility()
+    
+    -- Update visibility periodically
+    local visibilityConnection = RunService.Heartbeat:Connect(function()
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            updateVisibility()
+        end
+    end)
+    
+    -- Clean up visibility when character dies
+    humanoid.Died:Connect(function()
+        if visibilityConnection then
+            visibilityConnection
