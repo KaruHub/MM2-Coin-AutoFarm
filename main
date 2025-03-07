@@ -1,0 +1,75 @@
+-- Load the latest version of the Orion library
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+
+local correctKey = "100ViewsPls?!"
+local keyLink = "https://loot-link.com/s?BY8mZYpC"  -- The key link
+
+-- Create the key input GUI using Orion
+local Window = OrionLib:MakeWindow({
+    Name = "Key System",
+    HidePremium = false,
+    IntroEnabled = false,
+})
+
+-- Key input function
+local function checkKeyInput(input)
+    if input == correctKey then
+        -- Execute the code after successful key entry
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/KaruHub/MM2-Coin-AutoFarm/main/laodstring"))()
+        OrionLib:MakeNotification({
+            Name = "Success",
+            Content = "Correct key entered! Code has been executed.",
+            Image = "rbxassetid://6031075938",
+            Time = 3
+        })
+    else
+        -- Notify user if the key is incorrect
+        OrionLib:MakeNotification({
+            Name = "Error",
+            Content = "Incorrect key entered. Please try again.",
+            Image = "rbxassetid://6031075938",
+            Time = 3
+        })
+    end
+end
+
+-- Create the key input section
+local Tab = Window:MakeTab({
+    Name = "Enter Key",
+    Icon = "rbxassetid://6031075938",
+    PremiumOnly = false
+})
+
+Tab:AddTextbox({
+    Name = "Key Input",
+    Default = "",
+    TextDisappear = true,
+    Callback = function(value)
+        checkKeyInput(value)
+    end
+})
+
+-- Optional: Add a button to submit
+Tab:AddButton({
+    Name = "Submit Key",
+    Callback = function()
+        local value = Tab:GetTextbox("Key Input")
+        checkKeyInput(value)
+    end
+})
+
+-- Button to copy the key link
+Tab:AddButton({
+    Name = "Copy Key Link",
+    Callback = function()
+        setclipboard(keyLink)  -- Copy the link to clipboard
+        OrionLib:MakeNotification({
+            Name = "Link Copied",
+            Content = "The key link has been copied to your clipboard!",
+            Image = "rbxassetid://6031075938",
+            Time = 3
+        })
+    end
+})
+
+OrionLib:Init()
