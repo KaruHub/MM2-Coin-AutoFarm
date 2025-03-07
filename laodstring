@@ -1,176 +1,373 @@
-local G2L = {}
+--[=[ 
+ d888b  db    db d888888b      .d888b.      db      db    db  .d8b.  
+88' Y8b 88    88   88'        VP  8D      88      88    88 d8' 8b 
+88      88    88    88            odD'      88      88    88 88ooo88 
+88  ooo 88    88    88          .88'        88      88    88 88~~~88 
+88. ~8~ 88b  d88   .88.        j88.         88booo. 88b  d88 88   88    @uniquadev
+ Y888P  ~Y8888P' Y888888P      888888D      Y88888P ~Y8888P' YP   YP  CONVERTER 
+]=]
 
--- StarterGui.ScreenGui
-G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
-G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
-G2L["1"]["Name"] = "MainGUI"
-
--- StarterGui.ScreenGui.Main
-G2L["2"] = Instance.new("Frame", G2L["1"])
-G2L["2"]["BorderSizePixel"] = 0
-G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["2"]["Style"] = Enum.FrameStyle.RobloxRound
-G2L["2"]["Size"] = UDim2.new(0, 272, 0, 383)
-G2L["2"]["Position"] = UDim2.new(0.36689, 0, 0.29555, 0)
-G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["2"]["Name"] = "Main"
-
--- StarterGui.ScreenGui.Main.TextLabel
-G2L["3"] = Instance.new("TextLabel", G2L["2"])
-G2L["3"]["TextWrapped"] = true
-G2L["3"]["BorderSizePixel"] = 0
-G2L["3"]["TextSize"] = 14
-G2L["3"]["TextScaled"] = true
-G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["3"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["3"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["3"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["3"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["3"]["Text"] = [[Critic MM2 AutoFarm🍋]]
-
--- StarterGui.ScreenGui.Main.TextLabel.UICorner
-G2L["4"] = Instance.new("UICorner", G2L["3"])
-
--- StarterGui.ScreenGui.Main.TextLabel.UIStroke
-G2L["5"] = Instance.new("UIStroke", G2L["3"])
-G2L["5"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["5"]["Thickness"] = 3
-G2L["5"]["Color"] = Color3.fromRGB(109, 109, 109)
-
--- StarterGui.ScreenGui.Main.Minimize
-G2L["6"] = Instance.new("TextButton", G2L["2"])
-G2L["6"]["TextWrapped"] = true
-G2L["6"]["BorderSizePixel"] = 0
-G2L["6"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["6"]["TextSize"] = 14
-G2L["6"]["TextScaled"] = true
-G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["6"]["Size"] = UDim2.new(0, 49, 0, 49)
-G2L["6"]["Name"] = [[Minimize]]
-G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["6"]["Text"] = [[Minmize]]
-G2L["6"]["Position"] = UDim2.new(0.81741, 0, -0.00224, 0)
-
--- StarterGui.ScreenGui.Main.Minimize.UICorner
-G2L["7"] = Instance.new("UICorner", G2L["6"])
-
--- StarterGui.ScreenGui.Main.Minimize.UIStroke
-G2L["8"] = Instance.new("UIStroke", G2L["6"])
-G2L["8"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["8"]["Thickness"] = 3
-G2L["8"]["Color"] = Color3.fromRGB(109, 109, 109)
-
--- StarterGui.ScreenGui.Main.Backround
-G2L["9"] = Instance.new("ImageLabel", G2L["2"])
-G2L["9"]["BorderSizePixel"] = 0
-G2L["9"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["9"]["Image"] = [[http://www.roblox.com/asset/?id=2100841516]]
-G2L["9"]["Size"] = UDim2.new(0, 245, 0, 297)
-G2L["9"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["9"]["Name"] = [[Backround]]
-G2L["9"]["Position"] = UDim2.new(0.028, 0, 0.18413, 0)
-
--- StarterGui.ScreenGui.Main.Coin
-G2L["a"] = Instance.new("TextButton", G2L["2"])
-G2L["a"]["TextWrapped"] = true
-G2L["a"]["BorderSizePixel"] = 0
-G2L["a"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["a"]["TextSize"] = 14
-G2L["a"]["TextScaled"] = true
-G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["a"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["a"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["a"]["Name"] = [[Coin]]
-G2L["a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["a"]["Text"] = [[Coin Farm]]
-G2L["a"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["a"]["Position"] = UDim2.new(0.02768, 0, 0.19622, 0)
-
--- StarterGui.ScreenGui.Main.Coin.UICorner
-G2L["b"] = Instance.new("UICorner", G2L["a"])
-
--- StarterGui.ScreenGui.Main.Kill
-G2L["c"] = Instance.new("TextButton", G2L["2"])
-G2L["c"]["TextWrapped"] = true
-G2L["c"]["BorderSizePixel"] = 0
-G2L["c"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["c"]["TextSize"] = 14
-G2L["c"]["TextScaled"] = true
-G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["c"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["c"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["c"]["Name"] = [[Kill]]
-G2L["c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["c"]["Text"] = [[Fling all when bag full]]
-G2L["c"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["c"]["Position"] = UDim2.new(0.02906, 0, 0.37118, 0)
-
--- StarterGui.ScreenGui.Main.Kill.UICorner
-G2L["d"] = Instance.new("UICorner", G2L["c"])
-
--- StarterGui.ScreenGui.Main.AFK
-G2L["e"] = Instance.new("TextButton", G2L["2"])
-G2L["e"]["TextWrapped"] = true
-G2L["e"]["BorderSizePixel"] = 0
-G2L["e"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["e"]["TextSize"] = 14
-G2L["e"]["TextScaled"] = true
-G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["e"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["e"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["e"]["Name"] = [[AFK]]
-G2L["e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["e"]["Text"] = [[Anti - AFK]]
-G2L["e"]["Style"] = Enum.ButtonStyle.RobloxRoundDefaultButton
-G2L["e"]["Position"] = UDim2.new(0.02735, 0, 0.54366, 0)
-
--- StarterGui.ScreenGui.Main.AFK.UICorner
-G2L["f"] = Instance.new("UICorner", G2L["e"])
-
--- StarterGui.ScreenGui.Main.TextLabel
-G2L["10"] = Instance.new("TextLabel", G2L["2"])
-G2L["10"]["TextWrapped"] = true
-G2L["10"]["BorderSizePixel"] = 0
-G2L["10"]["TextSize"] = 14
-G2L["10"]["TextScaled"] = true
-G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
-G2L["10"]["FontFace"] = Font.new([[rbxasset://fonts/families/PressStart2P.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-G2L["10"]["TextColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["10"]["Size"] = UDim2.new(0, 200, 0, 50)
-G2L["10"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
-G2L["10"]["Text"] = [[Took me a long time to make this, also i made this gui becasue my main ui didnt work for some reasons.]]
-G2L["10"]["Position"] = UDim2.new(0.05515, 0, 0.71279, 0)
-
--- StarterGui.ScreenGui.Main.TextLabel.UICorner
-G2L["11"] = Instance.new("UICorner", G2L["10"])
-
--- StarterGui.ScreenGui.Main.TextLabel.UIStroke
-G2L["12"] = Instance.new("UIStroke", G2L["10"])
-G2L["12"]["ApplyStrokeMode"] = Enum.ApplyStrokeMode.Border
-G2L["12"]["Thickness"] = 3
-G2L["12"]["Color"] = Color3.fromRGB(109, 109, 109)
-
---[[
-    ========== FUNCTIONAL CODE ==========
-    Your original movement system with toggle functionality
-    Added coin counter and GUI state management
-]]
+-- Combined MM2 AutoFarm Script with Anti-AFK
 
 local player = game:GetService("Players").LocalPlayer
-local FLY_SPEED = 26
-local ARRIVAL_THRESHOLD = 1
-local visitedCoins = {}
-local coinCount = 0
-local coinFarmActive = false
-local afkEnabled = false
-local currentBodyVelocity
-local noclipConnection
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
 
+-- Configuration
+local FLY_SPEED = 26 -- Speed of movement
+local ARRIVAL_THRESHOLD = 1 -- Distance threshold to stop
+local ANTI_AFK_INTERVAL = 5 -- Anti-AFK click interval in seconds
+local visitedCoins = {}
+local startTime = tick()
+local coinsCollected = 0
+local isMinimized = false
+
+-- Create Main GUI
+local mainGui = Instance.new("ScreenGui")
+mainGui.Name = "MM2AutoFarmGUI"
+mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+mainGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Create Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.BorderSizePixel = 0
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainFrame.Style = Enum.FrameStyle.RobloxRound
+mainFrame.Size = UDim2.new(0, 272, 0, 383)
+mainFrame.Position = UDim2.new(0.36689, 0, 0.29555, 0)
+mainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+mainFrame.Name = "Main"
+mainFrame.Parent = mainGui
+
+-- Create Main Title
+local mainTitle = Instance.new("TextLabel")
+mainTitle.TextWrapped = true
+mainTitle.BorderSizePixel = 0
+mainTitle.TextSize = 14
+mainTitle.TextScaled = true
+mainTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+mainTitle.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+mainTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
+mainTitle.Size = UDim2.new(0, 200, 0, 50)
+mainTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+mainTitle.Text = "Critic MM2 AutoFarm🍋"
+mainTitle.Name = "Main"
+mainTitle.Parent = mainFrame
+
+-- Add UICorner to Main Title
+local mainTitleCorner = Instance.new("UICorner")
+mainTitleCorner.Parent = mainTitle
+
+-- Add UIStroke to Main Title
+local mainTitleStroke = Instance.new("UIStroke")
+mainTitleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+mainTitleStroke.Thickness = 3
+mainTitleStroke.Color = Color3.fromRGB(109, 109, 109)
+mainTitleStroke.Parent = mainTitle
+
+-- Create Minimize Button
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.TextWrapped = true
+minimizeButton.BorderSizePixel = 0
+minimizeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+minimizeButton.TextSize = 14
+minimizeButton.TextScaled = true
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+minimizeButton.Size = UDim2.new(0, 49, 0, 49)
+minimizeButton.Name = "Minimize"
+minimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+minimizeButton.Text = "Minmize"
+minimizeButton.Position = UDim2.new(0.81741, 0, -0.00224, 0)
+minimizeButton.Parent = mainFrame
+
+-- Add UICorner to Minimize Button
+local minimizeButtonCorner = Instance.new("UICorner")
+minimizeButtonCorner.Parent = minimizeButton
+
+-- Add UIStroke to Minimize Button
+local minimizeButtonStroke = Instance.new("UIStroke")
+minimizeButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+minimizeButtonStroke.Thickness = 3
+minimizeButtonStroke.Color = Color3.fromRGB(109, 109, 109)
+minimizeButtonStroke.Parent = minimizeButton
+
+-- Create Background
+local background = Instance.new("ImageLabel")
+background.BorderSizePixel = 0
+background.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+background.Image = "http://www.roblox.com/asset/?id=2100841516"
+background.Size = UDim2.new(0, 245, 0, 297)
+background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+background.Name = "Backround"
+background.Position = UDim2.new(0.02778, 0, 0.16788, 0)
+background.Parent = mainFrame
+
+-- Create Coin Status
+local coinStatus = Instance.new("TextLabel")
+coinStatus.TextWrapped = true
+coinStatus.BorderSizePixel = 0
+coinStatus.TextSize = 14
+coinStatus.TextScaled = true
+coinStatus.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+coinStatus.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+coinStatus.TextColor3 = Color3.fromRGB(0, 0, 0)
+coinStatus.RichText = true
+coinStatus.Size = UDim2.new(0, 225, 0, 49)
+coinStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
+coinStatus.Text = "Farming Coins"
+coinStatus.Name = "Coin"
+coinStatus.Position = UDim2.new(0.0861, 0, 0.17946, 0)
+coinStatus.Parent = mainFrame
+
+-- Add UICorner to Coin Status
+local coinStatusCorner = Instance.new("UICorner")
+coinStatusCorner.Parent = coinStatus
+
+-- Add UIStroke to Coin Status
+local coinStatusStroke = Instance.new("UIStroke")
+coinStatusStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+coinStatusStroke.Thickness = 3
+coinStatusStroke.Color = Color3.fromRGB(255, 255, 0)
+coinStatusStroke.Parent = coinStatus
+
+-- Create Fling Status
+local flingStatus = Instance.new("TextLabel")
+flingStatus.TextWrapped = true
+flingStatus.BorderSizePixel = 0
+flingStatus.TextSize = 14
+flingStatus.TextScaled = true
+flingStatus.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+flingStatus.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+flingStatus.TextColor3 = Color3.fromRGB(0, 0, 0)
+flingStatus.RichText = true
+flingStatus.Size = UDim2.new(0, 225, 0, 49)
+flingStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
+flingStatus.Text = "Flinging All when bag full"
+flingStatus.Name = "Fling"
+flingStatus.Position = UDim2.new(0.09219, 0, 0.36521, 0)
+flingStatus.Parent = mainFrame
+
+-- Add UICorner to Fling Status
+local flingStatusCorner = Instance.new("UICorner")
+flingStatusCorner.Parent = flingStatus
+
+-- Add UIStroke to Fling Status
+local flingStatusStroke = Instance.new("UIStroke")
+flingStatusStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+flingStatusStroke.Thickness = 3
+flingStatusStroke.Color = Color3.fromRGB(255, 255, 0)
+flingStatusStroke.Parent = flingStatus
+
+-- Create Kick Status
+local kickStatus = Instance.new("TextLabel")
+kickStatus.TextWrapped = true
+kickStatus.BorderSizePixel = 0
+kickStatus.TextSize = 14
+kickStatus.TextScaled = true
+kickStatus.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+kickStatus.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+kickStatus.TextColor3 = Color3.fromRGB(0, 0, 0)
+kickStatus.RichText = true
+kickStatus.Size = UDim2.new(0, 225, 0, 49)
+kickStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
+kickStatus.Text = "Anti-Kick ON"
+kickStatus.Name = "Kick"
+kickStatus.Position = UDim2.new(0.10536, 0, 0.55367, 0)
+kickStatus.Parent = mainFrame
+
+-- Add UICorner to Kick Status
+local kickStatusCorner = Instance.new("UICorner")
+kickStatusCorner.Parent = kickStatus
+
+-- Add UIStroke to Kick Status
+local kickStatusStroke = Instance.new("UIStroke")
+kickStatusStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+kickStatusStroke.Thickness = 3
+kickStatusStroke.Color = Color3.fromRGB(255, 255, 0)
+kickStatusStroke.Parent = kickStatus
+
+-- Create Discord Invite
+local discordInvite = Instance.new("TextLabel")
+discordInvite.TextWrapped = true
+discordInvite.BorderSizePixel = 0
+discordInvite.TextSize = 18
+discordInvite.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+discordInvite.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+discordInvite.TextColor3 = Color3.fromRGB(0, 0, 0)
+discordInvite.RichText = true
+discordInvite.Size = UDim2.new(0, 218, 0, 43)
+discordInvite.BorderColor3 = Color3.fromRGB(0, 0, 0)
+discordInvite.Text = "discord.gg/HKufewZM7v"
+discordInvite.Name = "Inv"
+discordInvite.Position = UDim2.new(0.09676, 0, 0.84451, 0)
+discordInvite.Parent = mainFrame
+
+-- Add UICorner to Discord Invite
+local discordInviteCorner = Instance.new("UICorner")
+discordInviteCorner.Parent = discordInvite
+
+-- Add UIStroke to Discord Invite
+local discordInviteStroke = Instance.new("UIStroke")
+discordInviteStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+discordInviteStroke.Thickness = 3
+discordInviteStroke.Color = Color3.fromRGB(109, 109, 109)
+discordInviteStroke.Parent = discordInvite
+
+-- Create Elapsed Time Label
+local elapsedTimeLabel = Instance.new("TextLabel")
+elapsedTimeLabel.TextWrapped = true
+elapsedTimeLabel.BorderSizePixel = 0
+elapsedTimeLabel.TextSize = 14
+elapsedTimeLabel.TextScaled = true
+elapsedTimeLabel.BackgroundColor3 = Color3.fromRGB(112, 112, 112)
+elapsedTimeLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+elapsedTimeLabel.TextColor3 = Color3.fromRGB(86, 255, 128)
+elapsedTimeLabel.BackgroundTransparency = 0.5
+elapsedTimeLabel.Size = UDim2.new(0, 97, 0, 33)
+elapsedTimeLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+elapsedTimeLabel.Text = "0.0"
+elapsedTimeLabel.Name = "Elapsed"
+elapsedTimeLabel.Position = UDim2.new(0.12609, 0, 0.73175, 0)
+elapsedTimeLabel.Parent = mainFrame
+
+-- Create Coins per Hour Label
+local coinsPerHourLabel = Instance.new("TextLabel")
+coinsPerHourLabel.TextWrapped = true
+coinsPerHourLabel.BorderSizePixel = 0
+coinsPerHourLabel.TextSize = 14
+coinsPerHourLabel.TextScaled = true
+coinsPerHourLabel.BackgroundColor3 = Color3.fromRGB(112, 112, 112)
+coinsPerHourLabel.FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+coinsPerHourLabel.TextColor3 = Color3.fromRGB(86, 255, 128)
+coinsPerHourLabel.BackgroundTransparency = 0.5
+coinsPerHourLabel.Size = UDim2.new(0, 97, 0, 33)
+coinsPerHourLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+coinsPerHourLabel.Text = "0000/h"
+coinsPerHourLabel.Name = "h"
+coinsPerHourLabel.Position = UDim2.new(0.56229, 0, 0.7317, 0)
+coinsPerHourLabel.Parent = mainFrame
+
+-- Create Anti-AFK GUI
+local antiAfkGui = Instance.new("ScreenGui")
+antiAfkGui.Name = "AntiAFKGui"
+antiAfkGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+antiAfkGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Create Anti-AFK Frame
+local antiAfkFrame = Instance.new("Frame")
+antiAfkFrame.BorderSizePixel = 0
+antiAfkFrame.BackgroundColor3 = Color3.fromRGB(209, 209, 209)
+antiAfkFrame.Size = UDim2.new(0, 255, 0, 140)
+antiAfkFrame.Position = UDim2.new(0.74392, 0, 0.69715, 0)
+antiAfkFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+antiAfkFrame.Parent = antiAfkGui
+
+-- Add UICorner to Anti-AFK Frame
+local antiAfkFrameCorner = Instance.new("UICorner")
+antiAfkFrameCorner.Parent = antiAfkFrame
+
+-- Create Anti-AFK Title
+local antiAfkTitle = Instance.new("TextLabel")
+antiAfkTitle.TextWrapped = true
+antiAfkTitle.BorderSizePixel = 0
+antiAfkTitle.TextSize = 14
+antiAfkTitle.TextScaled = true
+antiAfkTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+antiAfkTitle.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+antiAfkTitle.TextColor3 = Color3.fromRGB(0, 0, 0)
+antiAfkTitle.Size = UDim2.new(0, 255, 0, 50)
+antiAfkTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+antiAfkTitle.Text = "Critc Anti - AFK 🍋"
+antiAfkTitle.Parent = antiAfkFrame
+
+-- Add UICorner to Anti-AFK Title
+local antiAfkTitleCorner = Instance.new("UICorner")
+antiAfkTitleCorner.Parent = antiAfkTitle
+
+-- Add UIStroke to Anti-AFK Title
+local antiAfkTitleStroke = Instance.new("UIStroke")
+antiAfkTitleStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+antiAfkTitleStroke.Thickness = 3
+antiAfkTitleStroke.Color = Color3.fromRGB(255, 255, 0)
+antiAfkTitleStroke.Parent = antiAfkTitle
+
+-- Create Anti-AFK Status
+local antiAfkStatus = Instance.new("TextLabel")
+antiAfkStatus.TextWrapped = true
+antiAfkStatus.BorderSizePixel = 0
+antiAfkStatus.TextSize = 14
+antiAfkStatus.TextScaled = true
+antiAfkStatus.BackgroundColor3 = Color3.fromRGB(86, 255, 128)
+antiAfkStatus.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+antiAfkStatus.TextColor3 = Color3.fromRGB(0, 0, 0)
+antiAfkStatus.Size = UDim2.new(0, 200, 0, 50)
+antiAfkStatus.BorderColor3 = Color3.fromRGB(0, 0, 0)
+antiAfkStatus.Text = "Active"
+antiAfkStatus.Position = UDim2.new(0.10588, 0, 0.50714, 0)
+antiAfkStatus.Parent = antiAfkFrame
+
+-- Add UIStroke to Anti-AFK Frame
+local antiAfkFrameStroke = Instance.new("UIStroke")
+antiAfkFrameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+antiAfkFrameStroke.Thickness = 3
+antiAfkFrameStroke.Parent = antiAfkFrame
+
+-- Create minimized GUI (initially hidden)
+local minimizedGui = Instance.new("ScreenGui")
+minimizedGui.Name = "MinimizedGUI"
+minimizedGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+minimizedGui.Enabled = false
+minimizedGui.Parent = player:WaitForChild("PlayerGui")
+
+local minimizedButton = Instance.new("TextButton")
+minimizedButton.TextWrapped = true
+minimizedButton.BorderSizePixel = 0
+minimizedButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+minimizedButton.TextSize = 14
+minimizedButton.TextScaled = true
+minimizedButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+minimizedButton.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+minimizedButton.Size = UDim2.new(0, 50, 0, 50)
+minimizedButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+minimizedButton.Text = "MM2"
+minimizedButton.Position = UDim2.new(0, 10, 0, 10)
+minimizedButton.Parent = minimizedGui
+
+local minimizedButtonCorner = Instance.new("UICorner")
+minimizedButtonCorner.Parent = minimizedButton
+
+local minimizedButtonStroke = Instance.new("UIStroke")
+minimizedButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+minimizedButtonStroke.Thickness = 3
+minimizedButtonStroke.Color = Color3.fromRGB(255, 255, 0)
+minimizedButtonStroke.Parent = minimizedButton
+
+-- Function to update time and coins per hour display
+local function updateStats()
+    local elapsedTime = tick() - startTime
+    elapsedTimeLabel.Text = string.format("%.1f", elapsedTime)
+    
+    if elapsedTime > 0 then
+        local coinsPerHour = math.floor((coinsCollected / elapsedTime) * 3600)
+        coinsPerHourLabel.Text = tostring(coinsPerHour) .. "/h"
+    end
+end
+
+-- Function to toggle minimized state
+local function toggleMinimize()
+    isMinimized = not isMinimized
+    mainGui.Enabled = not isMinimized
+    antiAfkGui.Enabled = not isMinimized
+    minimizedGui.Enabled = isMinimized
+end
+
+-- Function to initialize the character
 local function initializeCharacter(character)
     local hrp = character:WaitForChild("HumanoidRootPart")
 
-    noclipConnection = game:GetService("RunService").Stepped:Connect(function()
+    -- Enable noclip for the character
+    RunService.Stepped:Connect(function()
         for _, part in ipairs(character:GetDescendants()) do
             if part:IsA("BasePart") then
                 part.CanCollide = false
@@ -178,26 +375,33 @@ local function initializeCharacter(character)
         end
     end)
 
-    currentBodyVelocity = Instance.new("BodyVelocity")
-    currentBodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
-    currentBodyVelocity.Velocity = Vector3.zero
-    currentBodyVelocity.Parent = hrp
+    -- Create a BodyVelocity object for smooth movement
+    local bodyVelocity = Instance.new("BodyVelocity")
+    bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+    bodyVelocity.Velocity = Vector3.zero
+    bodyVelocity.Parent = hrp
 
+    -- Function to move the character to a target position
     local function forceMoveTo(targetPos)
-        local startTime = tick()
+        local moveStartTime = tick()
+
         while (hrp.Position - targetPos).Magnitude > ARRIVAL_THRESHOLD do
-            if tick() - startTime > 10 then
-                currentBodyVelocity.Velocity = Vector3.zero
+            if tick() - moveStartTime > 10 then -- Timeout after 10 seconds
+                bodyVelocity.Velocity = Vector3.zero
                 return false
             end
+
+            -- Calculate direction and set velocity
             local direction = (targetPos - hrp.Position).Unit
-            currentBodyVelocity.Velocity = direction * FLY_SPEED
+            bodyVelocity.Velocity = direction * FLY_SPEED
             task.wait()
         end
-        currentBodyVelocity.Velocity = Vector3.zero
+
+        bodyVelocity.Velocity = Vector3.zero
         return true
     end
 
+    -- Function to get all uncollected coins
     local function getCoins()
         local coins = {}
         for _, coin in ipairs(workspace:GetDescendants()) do
@@ -208,10 +412,12 @@ local function initializeCharacter(character)
         return coins
     end
 
+    -- Function to find the closest coin
     local function getClosestCoin()
         local coins = getCoins()
         local closestCoin = nil
         local shortestDistance = math.huge
+
         for _, coin in ipairs(coins) do
             local distance = (hrp.Position - coin.Position).Magnitude
             if distance < shortestDistance then
@@ -219,81 +425,89 @@ local function initializeCharacter(character)
                 closestCoin = coin
             end
         end
+
         return closestCoin
     end
 
-    while coinFarmActive do
-        local coin = getClosestCoin()
-        if not coin then
-            task.wait(5)
-            continue
-        end
+    -- Main loop to collect coins
+    task.spawn(function()
+        while true do
+            local coin = getClosestCoin()
 
-        if forceMoveTo(coin.Position) then
-            visitedCoins[coin] = true
-            coin:Destroy()
-            coinCount += 1
-            
-            if coinCount >= 40 then
-                print("CoinFullC")
-                task.wait(2)
-                print("CoinFullC")
-                coinCount = 0
+            if not coin then
+                -- No coins left, wait and check again
+                coinStatus.Text = "No coins found, waiting..."
+                task.wait(5)
+                continue
             end
+
+            -- Move to the coin
+            coinStatus.Text = "Moving to coin..."
+            local targetPos = coin.Position
+            if forceMoveTo(targetPos) then
+                visitedCoins[coin] = true
+                coinsCollected = coinsCollected + 1
+                coinStatus.Text = "Coin collected: " .. coinsCollected
+                updateStats()
+                coin:Destroy() -- Destroy the coin locally
+            end
+
+            task.wait(0.1) -- Small delay before checking for the next coin
         end
-        task.wait(0.1)
-    end
+    end)
 end
 
-G2L["a"].MouseButton1Click:Connect(function()
-    coinFarmActive = not coinFarmActive
-    G2L["a"].TextColor3 = coinFarmActive and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
+-- Setup Anti-AFK mechanism
+local lastInputTime = tick()
+local function simulateInput()
+    -- Simulate a mouse movement to prevent AFK kick
+    local position = UserInputService:GetMouseLocation()
+    UserInputService:MoveMouse(position + Vector2.new(1, 0))
+    task.wait(0.1)
+    UserInputService:MoveMouse(position)
     
-    if coinFarmActive then
-        if player.Character then
-            task.spawn(initializeCharacter, player.Character)
-        end
-    else
-        if currentBodyVelocity then
-            currentBodyVelocity:Destroy()
-            currentBodyVelocity = nil
-        end
-        if noclipConnection then
-            noclipConnection:Disconnect()
-        end
-    end
-end)
-
-G2L["e"].MouseButton1Click:Connect(function()
-    if not afkEnabled then
-        afkEnabled = true
-        G2L["e"].TextColor3 = Color3.fromRGB(128, 0, 128)
-        
-        local virtualUser = game:GetService("VirtualUser")
-        game:GetService("Players").LocalPlayer.Idled:Connect(function()
-            virtualUser:CaptureController()
-            virtualUser:ClickButton2(Vector2.new())
-        end)
-    end
-end)
-
-G2L["6"].MouseButton1Click:Connect(function()
-    for _,v in pairs(G2L["2"]:GetChildren()) do
-        if v.Name ~= "TextLabel" and v.Name ~= "Minimize" then
-            v.Visible = not v.Visible
-        end
-    end
-    G2L["6"].Text = G2L["2"].Backround.Visible and "Minmize" or "Maximize"
-end)
-
-player.CharacterAdded:Connect(function(character)
-    if coinFarmActive then
-        initializeCharacter(character)
-    end
-end)
-
-if player.Character then
-    initializeCharacter(player.Character)
+    -- Update last input time
+    lastInputTime = tick()
+    
+    -- Update status
+    antiAfkStatus.Text = "Active - Last click: " .. math.floor(tick() - lastInputTime) .. "s ago"
 end
 
-return G2L["1"], require
+-- Start the Anti-AFK timer
+task.spawn(function()
+    while true do
+        if tick() - lastInputTime >= ANTI_AFK_INTERVAL then
+            simulateInput()
+        end
+        antiAfkStatus.Text = "Active - Next click: " .. math.floor(ANTI_AFK_INTERVAL - (tick() - lastInputTime)) .. "s"
+        task.wait(1)
+    end
+end)
+
+-- Update stats periodically
+task.spawn(function()
+    while true do
+        updateStats()
+        task.wait(1)
+    end
+end)
+
+-- Connect the minimize button
+minimizeButton.MouseButton1Click:Connect(toggleMinimize)
+minimizedButton.MouseButton1Click:Connect(toggleMinimize)
+
+-- Handle character initialization and respawning
+local function onCharacterAdded(character)
+    initializeCharacter(character)
+end
+
+-- Connect the character added event
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Initialize the current character if it already exists
+if player.Character then
+    onCharacterAdded(player.Character)
+end
+
+-- Return references to the GUIs
+return mainGui, antiAfkGui, minimizedGui
